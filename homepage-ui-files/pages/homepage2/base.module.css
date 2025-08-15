@@ -1,0 +1,126 @@
+/* Base Styles and Variables for HomePage v2 */
+
+/* ==================== Brand Color System ==================== */
+:root {
+  /* Primary Palette - Pure Black Foundation */
+  --pure-black: #000000;
+  --surface-dark: #0A0A0A;
+  --deep-purple: #1A0033;
+  
+  /* Text Hierarchy */
+  --text-primary: rgba(255, 255, 255, 1);
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-subtle: rgba(255, 255, 255, 0.3);
+  
+  /* Accent Gradients - 135° angle */
+  --gradient-electric: linear-gradient(135deg, #0066FF, #4B9BFF);
+  --gradient-purple: linear-gradient(135deg, #6B46FF, #9747FF);
+  --gradient-pink: linear-gradient(135deg, #FF0099, #FF66CC);
+  --gradient-orange: linear-gradient(135deg, #FF4500, #FF6B6B);
+  
+  /* Spacing Scale */
+  --spacing-xs: 8px;
+  --spacing-s: 16px;
+  --spacing-m: 24px;
+  --spacing-l: 32px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 64px;
+  --spacing-xxxl: 96px;
+  --spacing-desktop: 180px;
+  --spacing-tablet: 80px;
+  --spacing-mobile: 40px;
+  
+  /* Animation */
+  --ease-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-base: 400ms;
+  --duration-slow: 600ms;
+}
+
+/* ==================== Global Styles ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.homepage-v2 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-primary);
+  background: var(--pure-black);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ==================== Animated Background ==================== */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: float 20s infinite ease-in-out;
+  mix-blend-mode: screen;
+}
+
+.gradient-orb:nth-child(1) {
+  width: 600px;
+  height: 600px;
+  background: var(--gradient-electric);
+  top: -200px;
+  right: -200px;
+  animation-duration: 25s;
+}
+
+.gradient-orb:nth-child(2) {
+  width: 500px;
+  height: 500px;
+  background: var(--gradient-purple);
+  bottom: -150px;
+  left: -150px;
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.gradient-orb:nth-child(3) {
+  width: 400px;
+  height: 400px;
+  background: var(--gradient-pink);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 35s;
+  animation-delay: -10s;
+}
+
+/* ==================== Main Content ==================== */
+.main-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content.sidebar-open {
+  margin-left: 400px;
+  transition: margin-left var(--duration-base) var(--ease-smooth);
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: var(--gradient-electric);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

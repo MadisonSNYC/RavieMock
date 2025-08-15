@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ravie - Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 24px 32px;
+            background: transparent;
+        }
+        
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        nav {
+            display: flex;
+            gap: 48px;
+        }
+        
+        nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 600px;
+            padding: 180px 32px 80px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.3;
+        }
+        
+        .hero-bg svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-content {
+            max-width: 1280px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(48px, 7vw, 84px);
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+        
+        h1 em {
+            font-style: italic;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Projects Grid */
+        .projects {
+            padding: 0 32px 80px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: 120px;
+            gap: 12px;
+        }
+        
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Card variations */
+        .mythos {
+            grid-column: span 3;
+            grid-row: span 3;
+            background: #1a1a1a;
+        }
+        
+        .nereo {
+            grid-column: span 2;
+            grid-row: span 2;
+            background: linear-gradient(135deg, #ff6b35, #f72b1c);
+        }
+        
+        .solstice {
+            grid-column: span 3;
+            grid-row: span 2;
+            background: #e5e5e5;
+        }
+        
+        .cta {
+            grid-column: span 4;
+            grid-row: span 1;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        
+        .package {
+            grid-column: span 2;
+            grid-row: span 1;
+            background: #e5e5e5;
+        }
+        
+        .small-dark {
+            grid-column: span 2;
+            grid-row: span 1;
+            background: #1a1a1a;
+        }
+        
+        .text-card {
+            grid-column: span 4;
+            grid-row: span 2;
+            background: #1a1a1a;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+        }
+        
+        .solstice .card-title,
+        .package .card-title {
+            color: #1a1a1a;
+            top: 16px;
+            bottom: auto;
+        }
+        
+        .icon {
+            width: 48px;
+            height: 48px;
+            background: #2a2a2a;
+            border-radius: 8px;
+        }
+        
+        .text-small {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Ravie</div>
+            <nav>
+                <a href="#work">Work</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <svg viewBox="0 0 1440 600" fill="none">
+                <path d="M-100,100 Q400,50 700,150 T1500,100" stroke="#0066FF" stroke-width="1" opacity="0.3"/>
+                <path d="M-200,250 Q300,100 800,200 T1600,150" stroke="#0066FF" stroke-width="1.5" opacity="0.2"/>
+            </svg>
+        </div>
+        <div class="hero-content">
+            <h1>We create <em>cult</em><br>followings for brands</h1>
+            <p class="subtitle">A creative agency focused on scaling brands through strategy and design.</p>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="projects">
+        <div class="grid">
+            <div class="card mythos">
+                <div class="card-title">MYTHOS</div>
+            </div>
+            
+            <div class="card text-card">
+                <div class="icon"></div>
+                <div>
+                    <p class="text-small">Manage your</p>
+                    <p class="text-small">money</p>
+                    <p class="text-small">with ease</p>
+                </div>
+            </div>
+            
+            <div class="card nereo">
+                <div class="card-title" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">NEREO</div>
+            </div>
+            
+            <div class="card solstice">
+                <div class="card-title">SOLSTICE</div>
+            </div>
+            
+            <div class="card cta">
+                <p>Let's build something great together</p>
+            </div>
+            
+            <div class="card package">
+                <div class="card-title" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #1a1a1a;">Package</div>
+            </div>
+            
+            <div class="card small-dark"></div>
+            <div class="card small-dark"></div>
+            <div class="card small-dark"></div>
+        </div>
+    </section>
+</body>
+</html>

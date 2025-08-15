@@ -1,0 +1,164 @@
+/* Projects Grid Styles for HomePage v2 */
+
+/* ==================== Projects Grid - Bento Style ==================== */
+.projects-section {
+  padding: var(--spacing-xxl) var(--spacing-desktop);
+  padding-top: 0;
+}
+
+.projects-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-m);
+  margin-bottom: var(--spacing-xxl);
+}
+
+.project-card {
+  aspect-ratio: 4/3;
+  background: var(--surface-dark);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-smooth);
+  position: relative;
+  group: card;
+}
+
+.project-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(107, 70, 255, 0.2);
+}
+
+.project-card.empty {
+  border: 2px dashed var(--text-subtle);
+  background: transparent;
+  cursor: default;
+}
+
+.project-card.empty:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.project-card-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Video preview on hover */
+.project-gradient {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-purple);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-smooth);
+}
+
+.project-card:hover .project-gradient {
+  opacity: 0.3;
+}
+
+/* Project info overlay */
+.project-card::after {
+  content: 'View Project';
+  position: absolute;
+  bottom: var(--spacing-m);
+  left: var(--spacing-m);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.project-card:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* View All Button - Pill Shape */
+.view-all-container {
+  display: flex;
+  justify-content: center;
+}
+
+.view-all-button {
+  padding: 14px 32px;
+  background: var(--text-primary);
+  border: none;
+  border-radius: 30px;
+  color: var(--pure-black);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all var(--duration-base) var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.view-all-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-purple);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-smooth);
+}
+
+.view-all-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+.view-all-button:hover::before {
+  opacity: 1;
+}
+
+.view-all-text {
+  position: relative;
+  z-index: 1;
+  transition: color var(--duration-base) var(--ease-smooth);
+}
+
+.view-all-button:hover .view-all-text {
+  color: var(--text-primary);
+}
+
+/* Responsive adjustments for projects */
+@media (max-width: 1024px) {
+  .projects-section {
+    padding: var(--spacing-xl) var(--spacing-tablet);
+  }
+  
+  .projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .projects-section {
+    padding: var(--spacing-l) var(--spacing-mobile);
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-s);
+  }
+  
+  .project-card {
+    aspect-ratio: 16/9;
+  }
+}

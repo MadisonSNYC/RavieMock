@@ -1,5 +1,4 @@
 import FeaturedProjectCard from './FeaturedProjectCard'
-import CoinbaseThumbnail from '../../assets/CoinbaseThumbnail.webp'
 
 export default function CoinbaseFeature({ isHovered, onHover }) {
   const project = {
@@ -16,7 +15,7 @@ export default function CoinbaseFeature({ isHovered, onHover }) {
   return (
     <FeaturedProjectCard
       project={project}
-      thumbnail={CoinbaseThumbnail}
+      thumbnail="/Thumbs/CoinbaseThumbnail.webp"
       layoutClass="col-span-2 lg:col-span-3 row-span-2"
       delay={0}
       isHovered={isHovered}

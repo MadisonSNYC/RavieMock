@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MessageSquare, ArrowRight, Sparkles } from 'lucide-react'
-import FrostedContactForm from './FrostedContactForm'
+import { useNavigate } from 'react-router-dom'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 
@@ -11,7 +11,7 @@ export default function EndOfContentCTA({
   subtitle = "Let's discuss how we can bring your vision to life.",
   className = ""
 }) {
-  const [showForm, setShowForm] = useState(false)
+  const navigate = useNavigate()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -97,7 +97,7 @@ export default function EndOfContentCTA({
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <button
-                onClick={() => setShowForm(true)}
+                onClick={() => navigate('/contact')}
                 className={`group inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r ${style.buttonGradient} rounded-full text-white font-semibold hover:shadow-xl transition-all duration-300`}
               >
                 <MessageSquare className="w-5 h-5" />
@@ -132,12 +132,6 @@ export default function EndOfContentCTA({
           </div>
         </div>
       </motion.div>
-
-      {/* Contact Form Modal */}
-      <FrostedContactForm 
-        isOpen={showForm}
-        onClose={() => setShowForm(false)}
-      />
     </>
   )
 }

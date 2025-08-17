@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { motion } from 'framer-motion'
 import { MessageSquare, X, Sparkles } from 'lucide-react'
-import FrostedContactForm from './FrostedContactForm'
+import { useNavigate } from 'react-router-dom'
 
 export default function FloatingCTA() {
   const [isVisible, setIsVisible] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
-  const [showForm, setShowForm] = useState(false)
+  const navigate = useNavigate()
   const [lastScrollY, setLastScrollY] = useState(0)
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function FloatingCTA() {
             <div className="relative">
               {/* Floating Button - Mobile */}
               <button
-                onClick={() => setShowForm(true)}
+                onClick={() => navigate('/contact')}
                 className={`
                   md:hidden relative group
                   ${isMinimized ? 'p-3' : 'p-4'}
@@ -123,7 +123,7 @@ export default function FloatingCTA() {
                     </div>
 
                     <button
-                      onClick={() => setShowForm(true)}
+                      onClick={() => navigate('/contact')}
                       className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all group"
                     >
                       <MessageSquare className="w-4 h-4" />
@@ -155,12 +155,6 @@ export default function FloatingCTA() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Contact Form Modal */}
-      <FrostedContactForm 
-        isOpen={showForm} 
-        onClose={() => setShowForm(false)} 
-      />
     </>
   )
 }

@@ -12,7 +12,7 @@ export const projects = [
     metrics: '2.5M+ Views',
     url: 'https://ravie.co/the-work/coinbase',
     thumbnail: 'CoinbaseThumbnail.webp',
-    image: '/CoinbaseHero.webp',
+    image: '/Thumbs/CoinbaseThumbnail.webp',
     video: true,
     size: 'large', // Takes up 2x2 space in bento grid
     tier: 1,
@@ -66,7 +66,7 @@ export const projects = [
     thumbnail: 'kwthmb.webp',
     image: '/Thumbs/kwthmb.webp',
     video: true,
-    videoUrl: '/Kellerw/kw_mega_agent_camp_2022_opener (1080p).mp4',
+    videoUrl: '/Kellerw/KWTrim.mp4',
     size: 'tall', // Takes up 1x2 space
     tier: 1,
     featured: true,

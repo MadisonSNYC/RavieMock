@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, useMotionValue, useTransform, useAnimate } from 'framer-motion'
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowRight, Grid3X3 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { projects } from '../data/projects'
 
@@ -49,20 +49,44 @@ export default function RelatedProjectsCarousel({ currentProject }) {
     }
   }
   
-  // Smooth scroll with momentum
+  // Ultra smooth scroll with custom easing
   const scrollToPosition = (direction) => {
     if (!containerRef.current) return
     
+    const container = containerRef.current
     const cardWidth = 400 // Approximate card width
-    const currentScroll = containerRef.current.scrollLeft
-    const targetScroll = direction === 'left' 
-      ? Math.max(0, currentScroll - cardWidth * 2)
-      : currentScroll + cardWidth * 2
+    const startScroll = container.scrollLeft
+    const distance = direction === 'left' ? -cardWidth * 2 : cardWidth * 2
+    const targetScroll = Math.max(0, Math.min(
+      container.scrollWidth - container.clientWidth,
+      startScroll + distance
+    ))
     
-    containerRef.current.scrollTo({
-      left: targetScroll,
-      behavior: 'smooth'
-    })
+    const duration = 800 // Animation duration in ms
+    const startTime = performance.now()
+    
+    // Custom easing function (ease-in-out-cubic)
+    const easeInOutCubic = (t) => {
+      return t < 0.5 
+        ? 4 * t * t * t 
+        : 1 - Math.pow(-2 * t + 2, 3) / 2
+    }
+    
+    const animateScroll = (currentTime) => {
+      const elapsed = currentTime - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const easedProgress = easeInOutCubic(progress)
+      
+      container.scrollLeft = startScroll + (targetScroll - startScroll) * easedProgress
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll)
+      } else {
+        checkScrollBoundaries()
+      }
+    }
+    
+    requestAnimationFrame(animateScroll)
   }
   
   // Handle drag end with momentum
@@ -82,21 +106,59 @@ export default function RelatedProjectsCarousel({ currentProject }) {
     }
   }
   
-  // Convert vertical scroll to horizontal
+  // Convert vertical scroll to horizontal with smooth easing
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
     
-    const handleWheel = (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault()
-        container.scrollLeft += e.deltaY
+    let animationId = null
+    let targetScroll = container.scrollLeft
+    
+    const smoothScroll = () => {
+      const currentScroll = container.scrollLeft
+      const diff = targetScroll - currentScroll
+      
+      // Easing function for smooth deceleration
+      if (Math.abs(diff) > 0.5) {
+        container.scrollLeft = currentScroll + diff * 0.15 // Adjust this value for smoothness (0.1-0.2 is smooth)
+        animationId = requestAnimationFrame(smoothScroll)
+      } else {
+        container.scrollLeft = targetScroll
         checkScrollBoundaries()
       }
     }
     
+    const handleWheel = (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault()
+        
+        // Cancel any ongoing animation
+        if (animationId) {
+          cancelAnimationFrame(animationId)
+        }
+        
+        // Calculate target with reduced sensitivity
+        const scrollSpeed = 0.5 // Adjust this to control scroll speed (0.3-0.7 works well)
+        targetScroll = Math.max(
+          0, 
+          Math.min(
+            container.scrollWidth - container.clientWidth,
+            container.scrollLeft + (e.deltaY * scrollSpeed)
+          )
+        )
+        
+        // Start smooth scroll animation
+        smoothScroll()
+      }
+    }
+    
     container.addEventListener('wheel', handleWheel, { passive: false })
-    return () => container.removeEventListener('wheel', handleWheel)
+    return () => {
+      container.removeEventListener('wheel', handleWheel)
+      if (animationId) {
+        cancelAnimationFrame(animationId)
+      }
+    }
   }, [])
   
   // Monitor scroll position
@@ -198,7 +260,7 @@ export default function RelatedProjectsCarousel({ currentProject }) {
                   {/* Project Thumbnail */}
                   <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-4 bg-gradient-to-br from-purple-900/20 to-pink-900/20">
                     <img 
-                      src={project.image || "/image.png"}
+                      src={project.image || "/Thumbs/CoinbaseThumbnail.webp"}
                       alt={project.title}
                       className="w-full h-full object-cover"
                       loading="lazy"
@@ -238,6 +300,71 @@ export default function RelatedProjectsCarousel({ currentProject }) {
                 </motion.div>
               </motion.article>
             ))}
+            
+            {/* View More Projects Tile */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: relatedProjects.length * 0.1 }}
+              className="flex-none w-[350px] md:w-[400px]"
+            >
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => navigate('/work')}
+                className="w-full h-full min-h-[280px] rounded-xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-gray-700/30 hover:border-gray-600/50 transition-all duration-300 group"
+              >
+                <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+                  {/* Icon with glow effect */}
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      opacity: [0.7, 1, 0.7]
+                    }}
+                    transition={{ 
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="mb-6 relative"
+                  >
+                    <div className="absolute inset-0 blur-xl bg-gradient-to-r from-gray-400/20 to-white/20 rounded-full" />
+                    <Grid3X3 className="w-16 h-16 text-white/80 relative z-10" />
+                  </motion.div>
+                  
+                  {/* Text content */}
+                  <h3 className="text-white text-2xl font-light mb-3">
+                    View All Projects
+                  </h3>
+                  <p className="text-white/60 text-sm mb-6 max-w-[250px]">
+                    Explore our complete portfolio of creative work
+                  </p>
+                  
+                  {/* CTA with arrow */}
+                  <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
+                    <span className="text-sm font-medium">Browse Portfolio</span>
+                    <motion.span
+                      className="inline-block"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ 
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <ArrowRight size={18} />
+                    </motion.span>
+                  </div>
+                  
+                  {/* Subtle shine effect on hover */}
+                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 group-hover:animate-shimmer" />
+                  </div>
+                </div>
+              </motion.button>
+            </motion.div>
           </div>
         </motion.div>
         

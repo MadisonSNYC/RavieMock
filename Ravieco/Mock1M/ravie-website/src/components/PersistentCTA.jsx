@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageSquare, X, Sparkles } from 'lucide-react'
-import ConversationalContactForm from './ConversationalContactForm'
+import { useNavigate } from 'react-router-dom'
 
 export default function PersistentCTA() {
   const [showCTA, setShowCTA] = useState(false)
-  const [showContactForm, setShowContactForm] = useState(false)
+  const navigate = useNavigate()
   const [hasInteracted, setHasInteracted] = useState(false)
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function PersistentCTA() {
   }
 
   const handleOpenForm = () => {
-    setShowContactForm(true)
+    navigate('/contact')
     setShowCTA(false)
     setHasInteracted(true)
     localStorage.setItem('hasInteractedWithCTA', 'true')
@@ -163,12 +163,6 @@ export default function PersistentCTA() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Contact Form Modal */}
-      <ConversationalContactForm 
-        isOpen={showContactForm}
-        onClose={() => setShowContactForm(false)}
-      />
     </>
   )
 }

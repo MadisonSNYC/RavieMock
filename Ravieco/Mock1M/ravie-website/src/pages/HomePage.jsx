@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { IntroSequence } from '../components/intro'
 import HeroSectionV2 from '../components/HeroSectionV2'
 import SelectedWorkGrid from '../components/SelectedWorkGrid'
 import AboutSectionExact from '../components/AboutSectionExact'
@@ -5,8 +7,13 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import EndOfContentCTA from '../components/EndOfContentCTA'
 
 export default function HomePage() {
+  const [introComplete, setIntroComplete] = useState(false)
+
   return (
     <>
+      {/* Intro Sequence - 4 seconds */}
+      <IntroSequence onComplete={() => setIntroComplete(true)} />
+
       <ErrorBoundary fallbackMessage="Failed to load the hero section. Please refresh the page.">
         <HeroSectionV2 />
       </ErrorBoundary>

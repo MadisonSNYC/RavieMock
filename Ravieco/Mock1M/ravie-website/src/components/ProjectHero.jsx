@@ -32,7 +32,7 @@ export default function ProjectHero({ project, heroRef, heroY, heroOpacity }) {
           </video>
         ) : (
           <img 
-            src={project.image || "/JheneThmb.webp"}
+            src={project.image || "/Thumbs/JheneThmb.webp"}
             alt={project.title}
             className="w-full h-full object-cover"
             loading="eager"

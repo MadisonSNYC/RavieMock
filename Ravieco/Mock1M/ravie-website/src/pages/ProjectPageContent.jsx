@@ -1,7 +1,7 @@
-import { useState, useRef, useMemo, useCallback } from 'react'
+import { useRef, useMemo, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { ArrowLeft, MessageSquare, Sparkles } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import InteractiveTimeline from '../components/InteractiveTimeline'
 import ProcessVisualization from '../components/ProcessVisualization'
 import RelatedProjectsCarousel from '../components/RelatedProjectsCarousel'
@@ -9,7 +9,6 @@ import ScrollReveal from '../components/ScrollReveal'
 import MetricCard from '../components/MetricCard'
 import FloatingNavigation from '../components/FloatingNavigation'
 import ProjectHero from '../components/ProjectHero'
-import FrostedContactForm from '../components/FrostedContactForm'
 import ProjectEndCTA from '../components/ProjectEndCTA'
 import useScrollSpy from '../hooks/useScrollSpy'
 
@@ -22,7 +21,6 @@ import useScrollSpy from '../hooks/useScrollSpy'
  */
 export default function ProjectPageContent({ project }) {
   const navigate = useNavigate()
-  const [showContactForm, setShowContactForm] = useState(false)
   const containerRef = useRef(null)
   
   // Section refs for scroll spy
@@ -84,8 +82,8 @@ export default function ProjectPageContent({ project }) {
         onSectionClick={scrollToSection}
       />
 
-      {/* Project Page Sub-Header - Below Main Navigation */}
-      <div className="fixed top-20 left-0 right-0 z-30 backdrop-blur-md bg-black/50 border-b border-white/10">
+      {/* Project Page Sub-Header - Sticky Below Main Navigation */}
+      <div className="sticky top-20 left-0 right-0 z-30 backdrop-blur-md bg-black/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-8 py-2">
           <div className="flex items-center gap-4">
             <button
@@ -109,8 +107,58 @@ export default function ProjectPageContent({ project }) {
         heroOpacity={heroOpacity}
       />
 
+      {/* Results Section with Animated Metrics - Overlapping hero gradient */}
+      <div ref={resultsRef} className="relative z-10 -mt-8 bg-gradient-to-b from-transparent to-black w-full px-10 md:px-20 lg:px-44 pt-4 pb-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Compact horizontal glowing border container */}
+          <div className="relative p-4 md:p-6 rounded-xl bg-black/30 backdrop-blur-sm border border-gray-400/20 shadow-[0_0_20px_rgba(156,163,175,0.2)]">
+            {/* Subtle grey/white neon glow effect */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-gray-400/5 via-white/5 to-gray-400/5 blur-xl" />
+            
+            <div className="relative z-10">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+                {/* Title - smaller and inline */}
+                <ScrollReveal>
+                  <h2 className="text-xl md:text-2xl text-white font-light whitespace-nowrap">
+                    Impact & Results
+                  </h2>
+                </ScrollReveal>
+                
+                {/* Metrics - horizontal layout */}
+                <div className="flex flex-wrap md:flex-nowrap gap-4 md:gap-8 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl md:text-3xl font-light text-white">250%</span>
+                    <span className="text-xs text-white font-medium">Increase in<br/>engagement</span>
+                  </div>
+                  <div className="w-px h-12 bg-white/10 hidden md:block" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl md:text-3xl font-light text-white">3M+</span>
+                    <span className="text-xs text-white font-medium">Video<br/>views</span>
+                  </div>
+                  <div className="w-px h-12 bg-white/10 hidden md:block" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl md:text-3xl font-light text-white">45%</span>
+                    <span className="text-xs text-white font-medium">Conversion<br/>rate boost</span>
+                  </div>
+                </div>
+                
+                {/* Compact testimonial */}
+                <div className="md:max-w-xs lg:max-w-sm hidden lg:block">
+                  <p className="text-sm text-white/80 italic">
+                    "Their creative vision delivered results beyond expectations."
+                  </p>
+                  <p className="text-xs text-white/60 mt-1">
+                    — {project.clientName || "Marketing Director"}, {project.client}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Project Tags Section */}
-      <section className="relative z-10 bg-gradient-to-b from-black/50 to-black py-12">
+      <section className="relative z-10 bg-black py-12 border-t border-white/10">
         <div className="w-full px-10 md:px-20 lg:px-44">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -188,144 +236,6 @@ export default function ProjectPageContent({ project }) {
           </ScrollReveal>
         </div>
 
-        {/* Key Deliverables with Sticky Elements */}
-        <div ref={deliverablesRef} className="w-full px-10 md:px-20 lg:px-44 py-20">
-          <ScrollReveal>
-            <h2 className="text-3xl md:text-4xl text-white font-light mb-12 max-w-4xl mx-auto">
-              Key Deliverables
-            </h2>
-          </ScrollReveal>
-          
-          <div className="space-y-32">
-            {/* Deliverable 1 */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-              <ScrollReveal>
-                <div className="lg:sticky lg:top-32">
-                  <h3 className="text-2xl text-white mb-4">Brand Identity System</h3>
-                  <p className="text-white/60 mb-6">
-                    A complete visual identity that captures the essence of the brand while ensuring consistency across all touchpoints.
-                  </p>
-                  <ul className="space-y-2 text-white/80">
-                    <li className="flex items-center gap-2">
-                      <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                      Logo variations and usage guidelines
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                      Color palette and typography system
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                      Brand pattern library
-                    </li>
-                  </ul>
-                </div>
-              </ScrollReveal>
-              
-              <ScrollReveal delay={0.2}>
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-purple-900/20 to-pink-900/20">
-                  <img 
-                    src={project.image}
-                    alt="Brand Identity"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </ScrollReveal>
-            </div>
-
-            {/* Deliverable 2 */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-              <ScrollReveal delay={0.2}>
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-purple-900/20 to-pink-900/20 lg:order-2">
-                  <img 
-                    src={project.image}
-                    alt="Motion Design"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </ScrollReveal>
-              
-              <ScrollReveal>
-                <div className="lg:sticky lg:top-32 lg:order-1">
-                  <h3 className="text-2xl text-white mb-4">Motion Design System</h3>
-                  <p className="text-white/60 mb-6">
-                    Dynamic animations that bring the brand to life and create memorable user experiences.
-                  </p>
-                  <ul className="space-y-2 text-white/80">
-                    <li className="flex items-center gap-2">
-                      <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                      Animated logo reveals
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                      UI micro-interactions
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                      Social media animations
-                    </li>
-                  </ul>
-                </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </div>
-
-        {/* Interactive Timeline */}
-        <div className="w-full px-10 md:px-20 lg:px-44 py-20 border-t border-white/10">
-          <ScrollReveal>
-            <h2 className="text-3xl md:text-4xl text-white font-light mb-12 text-center">
-              Project Timeline
-            </h2>
-          </ScrollReveal>
-          <InteractiveTimeline phases={project.phases} />
-        </div>
-
-        {/* Process Visualization */}
-        <div ref={processRef} className="w-full px-10 md:px-20 lg:px-44 py-20 border-t border-white/10">
-          <ScrollReveal>
-            <h2 className="text-3xl md:text-4xl text-white font-light mb-12 text-center">
-              Our Creative Process
-            </h2>
-          </ScrollReveal>
-          <ProcessVisualization />
-        </div>
-
-        {/* Results Section with Animated Metrics */}
-        <div ref={resultsRef} className="w-full px-10 md:px-20 lg:px-44 py-20 border-t border-white/10">
-          <ScrollReveal>
-            <h2 className="text-3xl md:text-4xl text-white font-light mb-12 max-w-4xl mx-auto">
-              Impact & Results
-            </h2>
-          </ScrollReveal>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <MetricCard value="250%" label="Increase in engagement" delay={0.1} />
-            <MetricCard value="3M+" label="Video views" delay={0.2} />
-            <MetricCard value="45%" label="Conversion rate boost" delay={0.3} />
-          </div>
-
-          {/* Client Testimonial */}
-          <ScrollReveal delay={0.4}>
-            <div className="mt-20 max-w-4xl mx-auto">
-              <blockquote className="relative">
-                <div className="absolute -top-8 -left-4 text-6xl text-purple-500/20">"</div>
-                <p className="text-xl md:text-2xl text-white/80 italic leading-relaxed">
-                  {project.testimonial || "Working with Ravie transformed our brand presence. Their creative vision and strategic approach delivered results beyond our expectations."}
-                </p>
-                <footer className="mt-6">
-                  <p className="text-white">
-                    {project.clientName || "Marketing Director"}
-                  </p>
-                  <p className="text-white/60">
-                    {project.client}
-                  </p>
-                </footer>
-              </blockquote>
-            </div>
-          </ScrollReveal>
-        </div>
-
         {/* Team Credits */}
         <div className="w-full px-10 md:px-20 lg:px-44 py-20 border-t border-white/10">
           <ScrollReveal>
@@ -371,13 +281,6 @@ export default function ProjectPageContent({ project }) {
         {/* Related Projects Carousel with CTA */}
         <RelatedProjectsCarousel currentProject={project} />
       </section>
-
-
-      {/* Contact Form Modal */}
-      <FrostedContactForm 
-        isOpen={showContactForm}
-        onClose={() => setShowContactForm(false)}
-      />
     </div>
   )
 }

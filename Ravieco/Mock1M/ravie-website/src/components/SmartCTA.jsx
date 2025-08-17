@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { motion } from 'framer-motion'
 import { MessageSquare, X, Sparkles } from 'lucide-react'
-import FrostedContactForm from './FrostedContactForm'
+import { useNavigate } from 'react-router-dom'
 
 export default function SmartCTA() {
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
-  const [showForm, setShowForm] = useState(false)
+  const navigate = useNavigate()
   const [hasInteracted, setHasInteracted] = useState(false)
   const pulseIntervalRef = useRef(null)
   const timeOnPageRef = useRef(0)
@@ -116,7 +116,7 @@ export default function SmartCTA() {
   }
 
   const handleOpenForm = () => {
-    setShowForm(true)
+    navigate('/contact')
     setIsVisible(false)
   }
 
@@ -126,7 +126,7 @@ export default function SmartCTA() {
   return (
     <>
       <AnimatePresence>
-        {isVisible && !isDismissed && !showForm && (
+        {isVisible && !isDismissed && (
           <motion.div
             initial={{ opacity: 0, y: 20, x: 20 }}
             animate={{ opacity: 1, y: 0, x: 0 }}
@@ -206,15 +206,6 @@ export default function SmartCTA() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Contact Form Modal */}
-      <FrostedContactForm 
-        isOpen={showForm} 
-        onClose={() => {
-          setShowForm(false)
-          handleDismiss() // Don't show CTA again after form interaction
-        }} 
-      />
     </>
   )
 }

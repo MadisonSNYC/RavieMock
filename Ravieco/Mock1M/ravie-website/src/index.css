@@ -12,6 +12,9 @@
 
 /* CSS Variables for Dark Theme and Glassmorphism */
 :root {
+  /* Navigation height */
+  --nav-height: 64px;
+  
   /* Dark color palette */
   --background: #0a0a0a;
   --card: #1a1a1a;
@@ -471,7 +474,8 @@ body {
   .animate-glow,
   .animate-gentle-pulse,
   .animate-shake,
-  .animate-shimmer {
+  .animate-shimmer,
+  .group-hover\\:animate-shimmer {
     animation: none !important;
   }
   

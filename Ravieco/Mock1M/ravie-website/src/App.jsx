@@ -18,6 +18,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const ProjectPage = lazy(() => import('./pages/ProjectPage'))
 const ProjectDirectory = lazy(() => import('./components/ProjectDirectory'))
+const PortfolioPage = lazy(() => import('./routes/portfolio/index'))
 
 // Loading component
 const PageLoader = () => (
@@ -50,8 +51,10 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/work" element={<WorkPage />} />
+              <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/work/:id" element={<ProjectPage />} />
               <Route path="/project/:id" element={<ProjectPage />} />
+              {/* <Route path="/portfolio/:slug" element={<ProjectPage />} /> */}
               <Route path="/about" element={<AboutPageNew />} />
               <Route path="/about-old" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />

@@ -1,13 +1,13 @@
 /**
  * Premium Intro Sequence Component
- * Quick 3-second punchy animation
+ * 5-second animation sequence
  * 
  * Timeline:
- * 0-1200ms: Fast mosaic tiles reveal
- * 1200-1800ms: Quick left slide to black
- * 1800-1900ms: Brief pause
- * 1900-2500ms: "25 Million Views. And Counting."
- * 2500-3000ms: Final reveal
+ * 0-1600ms: Mosaic tiles reveal
+ * 1600-2400ms: Left slide to black
+ * 2400-2500ms: Brief pause
+ * 2500-4400ms: "25 Million Views. And Counting." with logo
+ * 4400-5000ms: Final reveal
  */
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -15,31 +15,38 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useIntroState } from './useIntroState'
 import './intro.css'
 
-// Import project thumbnails for mosaic
-import CoinbaseThumbnail from '../../assets/CoinbaseThumbnail.webp'
-import LoopsWP from '../../assets/LoopsWP.webp'
-import kwthmb from '../../assets/kwthmb.webp'
-import JheneThmb from '../../assets/JheneThmb.webp'
-import Ozonethmb1 from '../../assets/Ozonethmb1.webp'
-import ososthmb from '../../assets/ososthmb.webp'
-import cfathmb from '../../assets/cfathmb.webp'
-import Rectangle75 from '../../assets/Rectangle+75.webp'
-import Artboard1 from '../../assets/Artboard+1.webp'
-import ravieIcon from '../../assets/ravie-icon.png'
+// Use updated thumbnails from public folder
+const CoinbaseThumbnail = '/Thumbs/CoinbaseThumbnail.webp'
+const LoopsThumb = '/Thumbs/Loopsthumb.webp'
+const kwthmb = '/Thumbs/kwthmb.webp'
+const JheneThmb = '/Thumbs/JheneThmb.webp'
+const Ozonethmb1 = '/Thumbs/Ozonethmb1.webp'
+const ososthmb = '/Thumbs/ososthmb.webp'
+const cfathmb = '/Thumbs/cfathmb.webp'
+const Pubthmb = '/Thumbs/Pubthmb.webp'
+const crunchyrollthmb = '/Thumbs/crunchyrollthmb.webp'
+const gameplanthmb = '/Thumbs/gameplanthmb.webp'
+const growThmb = '/Thumbs/growThmb.webp'
+const stthmb = '/Thumbs/s&tthmb.webp'
+
+// Import Ravie logo from assets for word cycle
 import ravieLogo from '../../assets/Ravielogo1.png'
 
-// Timeline constants (in ms) - Quick 3 second intro
+// Ravie logo from public folder for secondary section
+const ravieLogoPublic = '/Ravie/Ravielogo1.png'
+
+// Timeline constants (in ms) - 5 second intro
 const TIMELINE = {
-  total: 3000,                              // 3s total - fast and punchy
+  total: 5000,                              // 5s total
   preroll: { start: 0, end: 0 },           // Skip word cycle
-  mosaic: { start: 0, end: 1200 },         // 1.2s for quick mosaic reveal
-  leftSlide: { start: 1200, end: 1800 },   // 0.6s for quick slide
-  pause: { start: 1800, end: 1900 },       // 0.1s brief pause
-  secondary: { start: 1900, end: 2500 },   // 0.6s for text (no time for delayed "And Counting")
-  reveal: { start: 2500, end: 3000 }       // 0.5s for final reveal
+  mosaic: { start: 0, end: 1600 },         // 1.6s for mosaic reveal
+  leftSlide: { start: 1600, end: 2400 },   // 0.8s for slide
+  pause: { start: 2400, end: 2500 },       // 0.1s brief pause
+  secondary: { start: 2500, end: 4400 },   // 1.9s for text with "And Counting" and logo
+  reveal: { start: 4400, end: 5000 }       // 0.6s for final reveal
 }
 
-const STAGGER_DELAY = 70 // ms between each tile (much faster for 3s total)
+const STAGGER_DELAY = 90 // ms between each tile
 
 // Word cycle configuration - optimized for readability
 const WORD_CYCLE_CONFIG = {
@@ -290,19 +297,19 @@ export default function IntroSequence({ onComplete }) {
     { id: 2, row: 0, col: 1, isBlack: true },           // B
     { id: 3, src: kwthmb, row: 0, col: 2 },            // M
     { id: 4, row: 0, col: 3, isBlack: true },          // B
-    { id: 5, src: LoopsWP, row: 0, col: 4 },           // M
+    { id: 5, src: LoopsThumb, row: 0, col: 4 },        // M
     // Row 1  
     { id: 6, row: 1, col: 0, isBlack: true },          // B
     { id: 7, src: JheneThmb, row: 1, col: 1 },         // M
     { id: 8, row: 1, col: 2, isBlack: true },          // B
-    { id: 9, src: Artboard1, row: 1, col: 3 },         // M (replaced logo with Artboard1)
+    { id: 9, src: crunchyrollthmb, row: 1, col: 3 },   // M
     { id: 10, row: 1, col: 4, isBlack: true },         // B
     // Row 2
     { id: 11, src: ososthmb, row: 2, col: 0 },         // M
     { id: 12, row: 2, col: 1, isBlack: true },         // B
     { id: 13, src: cfathmb, row: 2, col: 2 },          // M
     { id: 14, row: 2, col: 3, isBlack: true },         // B
-    { id: 15, src: Rectangle75, row: 2, col: 4 }        // M (changed from Ozonethmb1)
+    { id: 15, src: Pubthmb, row: 2, col: 4 }           // M
   ]
 
   // Calculate tile index for L→R sweep (row-major order)
@@ -510,7 +517,7 @@ export default function IntroSequence({ onComplete }) {
           </>
         )}
 
-        {/* Phase 3: Secondary copy - 25 Million Views */}
+        {/* Phase 3: Secondary copy - 25 Million Views with Logo */}
         <motion.div
           className="intro-secondary-bold"
           initial={{ opacity: 0 }}
@@ -556,8 +563,8 @@ export default function IntroSequence({ onComplete }) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: secondaryVisible ? 1 : 0, y: secondaryVisible ? 0 : 15 }}
               transition={{ 
-                duration: 0.3,
-                delay: 0.2, // Minimal delay for 3s total
+                duration: 0.4,
+                delay: 0.3, // Slightly more delay for 5s total
                 ease: [0.25, 0.46, 0.45, 0.94]
               }}
               style={{ 
@@ -570,6 +577,28 @@ export default function IntroSequence({ onComplete }) {
               And Counting.
             </motion.span>
           </h2>
+          
+          {/* Ravie Logo */}
+          <motion.img
+            src={ravieLogoPublic}
+            alt="Ravie"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ 
+              opacity: secondaryVisible ? 1 : 0,
+              y: secondaryVisible ? 0 : 20
+            }}
+            transition={{ 
+              duration: 0.5,
+              delay: 0.6, // Show after text appears
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
+            style={{
+              marginTop: '2.5rem',
+              height: 'clamp(3rem, 6vw, 5rem)',
+              width: 'auto',
+              display: 'block'
+            }}
+          />
         </motion.div>
 
         {/* Debug progress bar (optional) */}

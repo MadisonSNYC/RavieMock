@@ -12,6 +12,8 @@
 
 /* CSS Variables for Dark Theme and Glassmorphism */
 :root {
+  color-scheme: dark;
+  
   /* Navigation height */
   --nav-height: 64px;
   

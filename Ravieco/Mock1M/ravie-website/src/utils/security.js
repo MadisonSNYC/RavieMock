@@ -4,6 +4,7 @@
  */
 
 import logger from '../services/logger'
+import { getEnv } from './env-validator'
 
 /**
  * Content Security Policy configuration
@@ -27,7 +28,7 @@ export function getCSPHeader() {
   ]
 
   // Add report URI if configured
-  const reportUri = import.meta.env.VITE_CSP_REPORT_URI
+  const reportUri = getEnv('VITE_CSP_REPORT_URI')
   if (reportUri) {
     directives.push(`report-uri ${reportUri}`)
   }
@@ -51,13 +52,16 @@ export function getSecurityHeaders() {
 }
 
 /**
- * Rate limiting implementation
+ * Rate limiting implementation with automatic cleanup
  */
 class RateLimiter {
   constructor(maxRequests = 100, windowMs = 900000) {
-    this.maxRequests = parseInt(import.meta.env.VITE_RATE_LIMIT_MAX_REQUESTS) || maxRequests
-    this.windowMs = parseInt(import.meta.env.VITE_RATE_LIMIT_WINDOW_MS) || windowMs
+    this.maxRequests = parseInt(getEnv('VITE_RATE_LIMIT_MAX_REQUESTS')) || maxRequests
+    this.windowMs = parseInt(getEnv('VITE_RATE_LIMIT_WINDOW_MS')) || windowMs
     this.requests = new Map()
+    this.lastCleanup = Date.now()
+    this.cleanupInterval = Math.min(windowMs / 2, 60000) // Cleanup every minute or half window
+    this.maxMapSize = 500 // Lower threshold for cleanup
   }
 
   /**
@@ -77,9 +81,15 @@ class RateLimiter {
       }
 
       const now = Date.now()
+      
+      // Perform time-based cleanup
+      if (now - this.lastCleanup > this.cleanupInterval) {
+        this.cleanup()
+      }
+      
       const userRequests = this.requests.get(identifier) || []
       
-      // Clean old requests
+      // Clean old requests for this user
       const validRequests = userRequests.filter(
         timestamp => now - timestamp < this.windowMs
       )
@@ -106,8 +116,8 @@ class RateLimiter {
       validRequests.push(now)
       this.requests.set(identifier, validRequests)
 
-      // Clean up old identifiers periodically
-      if (this.requests.size > 1000) {
+      // Emergency cleanup if map gets too large
+      if (this.requests.size > this.maxMapSize) {
         this.cleanup()
       }
 
@@ -133,6 +143,8 @@ class RateLimiter {
    */
   cleanup() {
     const now = Date.now()
+    let cleaned = 0
+    
     for (const [identifier, requests] of this.requests.entries()) {
       const validRequests = requests.filter(
         timestamp => now - timestamp < this.windowMs
@@ -140,9 +152,20 @@ class RateLimiter {
       
       if (validRequests.length === 0) {
         this.requests.delete(identifier)
-      } else {
+        cleaned++
+      } else if (validRequests.length !== requests.length) {
+        // Update with cleaned array to save memory
         this.requests.set(identifier, validRequests)
       }
+    }
+    
+    this.lastCleanup = now
+    
+    if (cleaned > 0) {
+      logger.debug('Rate limiter cleanup', { 
+        entriesRemoved: cleaned, 
+        remainingEntries: this.requests.size 
+      })
     }
   }
 
@@ -153,10 +176,192 @@ class RateLimiter {
   reset(identifier) {
     this.requests.delete(identifier)
   }
+  
+  /**
+   * Get current memory usage stats
+   * @returns {Object} Memory stats
+   */
+  getStats() {
+    let totalRequests = 0
+    for (const requests of this.requests.values()) {
+      totalRequests += requests.length
+    }
+    
+    return {
+      identifiers: this.requests.size,
+      totalRequests,
+      lastCleanup: new Date(this.lastCleanup),
+      nextCleanup: new Date(this.lastCleanup + this.cleanupInterval)
+    }
+  }
 }
 
 // Export singleton instance
 export const rateLimiter = new RateLimiter()
+
+/**
+ * CSRF Protection implementation
+ */
+class CSRFProtection {
+  constructor() {
+    this.tokens = new Map()
+    this.tokenLifetime = 3600000 // 1 hour
+    this.tokenLength = 32
+  }
+
+  /**
+   * Generate a new CSRF token for a session
+   * @param {string} sessionId - Session identifier
+   * @returns {string} CSRF token
+   */
+  generateToken(sessionId) {
+    try {
+      if (!sessionId) {
+        throw new Error('Session ID required for CSRF token')
+      }
+
+      // Generate secure random token
+      const token = generateSecureToken(this.tokenLength)
+      
+      // Store token with timestamp
+      this.tokens.set(sessionId, {
+        token,
+        createdAt: Date.now(),
+        used: false
+      })
+
+      // Clean old tokens
+      this.cleanupExpiredTokens()
+
+      logger.debug('CSRF token generated', { sessionId })
+      return token
+    } catch (error) {
+      logger.error('CSRF token generation failed', { error: error.message })
+      throw new Error('Failed to generate CSRF token')
+    }
+  }
+
+  /**
+   * Validate a CSRF token
+   * @param {string} sessionId - Session identifier
+   * @param {string} token - Token to validate
+   * @returns {Object} Validation result
+   */
+  validateToken(sessionId, token) {
+    try {
+      if (!sessionId || !token) {
+        return {
+          valid: false,
+          error: 'Missing session ID or token'
+        }
+      }
+
+      const tokenData = this.tokens.get(sessionId)
+      
+      if (!tokenData) {
+        logger.warn('CSRF validation failed - token not found', { sessionId })
+        return {
+          valid: false,
+          error: 'Invalid or expired token'
+        }
+      }
+
+      // Check if token matches
+      if (tokenData.token !== token) {
+        logger.warn('CSRF validation failed - token mismatch', { sessionId })
+        return {
+          valid: false,
+          error: 'Invalid token'
+        }
+      }
+
+      // Check if token is expired
+      const now = Date.now()
+      if (now - tokenData.createdAt > this.tokenLifetime) {
+        this.tokens.delete(sessionId)
+        logger.warn('CSRF validation failed - token expired', { sessionId })
+        return {
+          valid: false,
+          error: 'Token expired'
+        }
+      }
+
+      // Check if token was already used (for single-use tokens)
+      if (tokenData.used) {
+        logger.warn('CSRF validation failed - token already used', { sessionId })
+        return {
+          valid: false,
+          error: 'Token already used'
+        }
+      }
+
+      // Mark token as used (optional - remove for multi-use tokens)
+      tokenData.used = true
+      this.tokens.set(sessionId, tokenData)
+
+      return {
+        valid: true,
+        error: null
+      }
+    } catch (error) {
+      logger.error('CSRF validation error', { error: error.message })
+      return {
+        valid: false,
+        error: 'Validation error'
+      }
+    }
+  }
+
+  /**
+   * Refresh a token for a session
+   * @param {string} sessionId - Session identifier
+   * @returns {string} New CSRF token
+   */
+  refreshToken(sessionId) {
+    this.tokens.delete(sessionId)
+    return this.generateToken(sessionId)
+  }
+
+  /**
+   * Clean up expired tokens
+   */
+  cleanupExpiredTokens() {
+    const now = Date.now()
+    let cleaned = 0
+
+    for (const [sessionId, tokenData] of this.tokens.entries()) {
+      if (now - tokenData.createdAt > this.tokenLifetime) {
+        this.tokens.delete(sessionId)
+        cleaned++
+      }
+    }
+
+    if (cleaned > 0) {
+      logger.debug('CSRF tokens cleaned', { count: cleaned })
+    }
+  }
+
+  /**
+   * Get token for session (if exists and valid)
+   * @param {string} sessionId - Session identifier
+   * @returns {string|null} Token or null
+   */
+  getToken(sessionId) {
+    const tokenData = this.tokens.get(sessionId)
+    if (!tokenData) return null
+
+    const now = Date.now()
+    if (now - tokenData.createdAt > this.tokenLifetime) {
+      this.tokens.delete(sessionId)
+      return null
+    }
+
+    return tokenData.token
+  }
+}
+
+// Export singleton instance
+export const csrfProtection = new CSRFProtection()
 
 /**
  * Secure random token generation
@@ -202,17 +407,19 @@ export async function hashData(data) {
  * @returns {boolean} Whether origin is allowed
  */
 export function isAllowedOrigin(origin) {
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://ravie.co',
-    'https://www.ravie.co'
-  ]
+  const allowedOrigins = []
 
-  // Add custom allowed origins from env
-  const customOrigins = import.meta.env.VITE_ALLOWED_ORIGINS
-  if (customOrigins) {
-    allowedOrigins.push(...customOrigins.split(',').map(o => o.trim()))
+  // Get allowed origins from environment variable
+  const configuredOrigins = getEnv('VITE_ALLOWED_ORIGINS')
+  if (configuredOrigins) {
+    allowedOrigins.push(...configuredOrigins.split(',').map(o => o.trim()))
+  }
+
+  // Add localhost origins in development only
+  const nodeEnv = getEnv('NODE_ENV')
+  if (nodeEnv === 'development' || nodeEnv === 'test') {
+    allowedOrigins.push('http://localhost:5173')
+    allowedOrigins.push('http://localhost:3000')
   }
 
   return allowedOrigins.includes(origin)
@@ -267,11 +474,20 @@ export function checkURLSecurity(url) {
       }
     }
 
+    // Special handling for mailto: links
+    if (lowerUrl.startsWith('mailto:')) {
+      // Validate mailto link structure
+      if (!url.match(/^mailto:[^@\s]+@[^@\s]+\.[^@\s]+/)) {
+        return { safe: false, reason: 'Invalid mailto format' }
+      }
+      return { safe: true, reason: null }
+    }
+
     try {
       const urlObj = new URL(url)
       
       // Check for suspicious patterns in the entire URL
-      if (url.includes('@') && !url.startsWith('mailto:')) {
+      if (url.includes('@')) {
         return { safe: false, reason: 'Suspicious hostname' }
       }
 
@@ -295,6 +511,7 @@ export function checkURLSecurity(url) {
 export default {
   getSecurityHeaders,
   rateLimiter,
+  csrfProtection,
   generateSecureToken,
   hashData,
   isAllowedOrigin,

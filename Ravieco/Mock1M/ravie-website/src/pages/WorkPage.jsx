@@ -125,21 +125,32 @@ export default function WorkPage() {
             onProjectClick={(project) => {
               // Validate and navigate to project's external link if available
               if (project.href) {
-                const urlCheck = checkURLSecurity(project.href)
-                
-                if (urlCheck.safe) {
-                  window.open(project.href, '_blank', 'noopener,noreferrer')
-                  logger.info('Project link opened', { 
+                try {
+                  const urlCheck = checkURLSecurity(project.href)
+                  
+                  if (urlCheck.safe) {
+                    window.open(project.href, '_blank', 'noopener,noreferrer')
+                    logger.info('Project link opened', { 
+                      projectId: project.id,
+                      projectTitle: project.title 
+                    })
+                  } else {
+                    logger.warn('Unsafe project URL blocked', {
+                      projectId: project.id,
+                      reason: urlCheck.reason
+                    })
+                    // Show user-friendly error message
+                    alert('This project link cannot be opened for security reasons.')
+                  }
+                } catch (error) {
+                  logger.error('Error checking URL security', {
                     projectId: project.id,
-                    projectTitle: project.title 
+                    projectTitle: project.title,
+                    error: error.message,
+                    url: project.href
                   })
-                } else {
-                  logger.warn('Unsafe project URL blocked', {
-                    projectId: project.id,
-                    reason: urlCheck.reason
-                  })
-                  // Optionally show user-friendly error message
-                  console.error('Unable to open project link')
+                  // Graceful fallback - don't crash the app
+                  alert('Unable to open project link. Please try again later.')
                 }
               }
             }}

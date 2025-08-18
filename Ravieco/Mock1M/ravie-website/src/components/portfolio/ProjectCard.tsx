@@ -1,8 +1,12 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
 import { VideoPreview, VideoPreviewHandle } from './VideoPreview'
+import TitleOverlay from './TitleOverlay'
 import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
+import { useSpotlight } from './SpotlightContext'
+
+const HOVER_DELAY_MS = 100
 
 export interface Project {
   id: string
@@ -13,6 +17,7 @@ export interface Project {
   posterSrc: string
   previewSrc: string
   durationSec?: number
+  description?: string
 }
 
 export interface ProjectCardProps {
@@ -20,86 +25,97 @@ export interface ProjectCardProps {
 }
 
 /**
- * Individual project card with video preview
+ * Individual project card with video preview and title overlay
  */
 export function ProjectCard({ project }: ProjectCardProps) {
+  const location = useLocation()
   const videoRef = useRef<VideoPreviewHandle>(null)
   const { prefersReducedMotion } = useReducedMotionContext()
+  const { activeId, setActiveId } = useSpotlight()
+  const [active, setActive] = useState(false)
+  const isActive = activeId === project.id
+  const isMuted = activeId !== null && !isActive
   
-  const handleMouseEnter = () => {
+  const hoverTimer = useRef<number | null>(null)
+  const [pointerInside, setPointerInside] = useState(false)
+  
+  const activate = () => {
+    setActive(true)
+    setActiveId(project.id)
     if (!prefersReducedMotion) {
       videoRef.current?.play()
     }
   }
   
-  const handleMouseLeave = () => {
+  const deactivate = () => {
+    setActive(false)
+    setActiveId(null)
     videoRef.current?.pause()
   }
   
-  const handleFocus = () => {
-    if (!prefersReducedMotion) {
-      videoRef.current?.play()
-    }
+  // POINTER handlers (delayed)
+  const handlePointerEnter = () => {
+    setPointerInside(true)
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current)
+    hoverTimer.current = window.setTimeout(() => {
+      activate()
+    }, HOVER_DELAY_MS)
   }
   
-  const handleBlur = () => {
-    videoRef.current?.pause()
+  const handlePointerLeave = () => {
+    setPointerInside(false)
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current)
+    deactivate()
   }
-
-  // Animation variants
-  const cardVariants = {
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 }
-  }
+  
+  // KEYBOARD handlers (instant)
+  const handleFocus = () => activate()
+  const handleBlur = () => deactivate()
 
   return (
-    <motion.article
-      className="group relative flex flex-col gap-3 focus-within:outline-none"
-      initial={prefersReducedMotion ? false : cardVariants.initial}
-      whileInView={prefersReducedMotion ? false : cardVariants.animate}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+    <article
+      data-muted={isMuted ? 'true' : 'false'}
+      className="portfolio-card group relative"
     >
       <Link
         to={`/portfolio/${project.slug}`}
-        className="relative block overflow-hidden rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        state={{ background: location }}
+        className="block relative portfolio-tile w-full overflow-hidden rounded-none"
         aria-label={project.title}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={handlePointerEnter}
+        onMouseLeave={handlePointerLeave}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
         onFocus={handleFocus}
         onBlur={handleBlur}
       >
-        <div className="aspect-video bg-gray-900">
-          <VideoPreview
-            ref={videoRef}
-            posterSrc={project.posterSrc}
-            previewSrc={project.previewSrc}
-            autoPlayAllowed={!prefersReducedMotion}
-            className="w-full h-full"
-          />
-        </div>
-        
-        {/* Overlay gradient for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <motion.div layoutId={`card-${project.id}`} className="w-full h-full">
+          <motion.div layoutId={`media-${project.id}`} className="spotlight-content w-full h-full">
+            <VideoPreview
+              ref={videoRef}
+              posterSrc={project.posterSrc}
+              previewSrc={project.previewSrc}
+              autoPlayAllowed={!prefersReducedMotion}
+              className="w-full h-full rounded-none"
+            />
+          </motion.div>
+          
+          <motion.div layoutId={`title-${project.id}`}>
+            <TitleOverlay
+              title={project.title}
+              client={project.client}
+              categories={project.categories}
+              show={active}
+              compact={true}
+              className=""
+            />
+          </motion.div>
+        </motion.div>
       </Link>
       
-      {/* Project info */}
-      <div className="flex flex-col gap-1 px-1">
-        <h3 className="text-lg font-medium text-white">
-          {project.title}
-        </h3>
-        {project.client && (
-          <p className="text-sm text-gray-400">
-            {project.client}
-          </p>
-        )}
-        {project.categories.length > 0 && (
-          <p className="text-xs text-gray-500">
-            {project.categories.join(' · ')}
-          </p>
-        )}
-      </div>
-    </motion.article>
+      {/* Visible focus ring for a11y */}
+      <div className="pointer-events-none absolute inset-0 rounded-none ring-0 group-focus-within:ring-2 group-focus-within:ring-white/70" />
+    </article>
   )
 }
 

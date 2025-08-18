@@ -3,6 +3,8 @@
  * All user inputs must be validated through these functions
  */
 
+import logger from '../services/logger'
+
 /**
  * Validates and sanitizes email addresses
  * @param {string} email - Email to validate
@@ -46,7 +48,7 @@ export function validateEmail(email) {
       sanitized: trimmed 
     }
   } catch (error) {
-    console.error('Email validation error:', error)
+    logger.error('Email validation error', { error: error.message })
     return { 
       isValid: false, 
       error: 'Validation error occurred',
@@ -122,7 +124,7 @@ export function validateText(text, options = {}) {
       sanitized 
     }
   } catch (error) {
-    console.error('Text validation error:', error)
+    logger.error('Text validation error', { error: error.message })
     return { 
       isValid: false, 
       error: 'Validation error occurred',
@@ -182,7 +184,7 @@ export function validateURL(url) {
       }
     }
   } catch (error) {
-    console.error('URL validation error:', error)
+    logger.error('URL validation error', { error: error.message })
     return { 
       isValid: false, 
       error: 'Validation error occurred',
@@ -262,7 +264,7 @@ export function validateNumber(value, options = {}) {
       sanitized: num 
     }
   } catch (error) {
-    console.error('Number validation error:', error)
+    logger.error('Number validation error', { error: error.message })
     return { 
       isValid: false, 
       error: 'Validation error occurred',
@@ -361,7 +363,7 @@ export function validateFile(file, options = {}) {
       sanitized: file 
     }
   } catch (error) {
-    console.error('File validation error:', error)
+    logger.error('File validation error', { error: error.message })
     return { 
       isValid: false, 
       error: 'Validation error occurred',

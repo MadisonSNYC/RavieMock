@@ -52,9 +52,9 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/work" element={<WorkPage />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/portfolio/:slug" element={<PortfolioPage />} />
               <Route path="/work/:id" element={<ProjectPage />} />
               <Route path="/project/:id" element={<ProjectPage />} />
-              {/* <Route path="/portfolio/:slug" element={<ProjectPage />} /> */}
               <Route path="/about" element={<AboutPageNew />} />
               <Route path="/about-old" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />

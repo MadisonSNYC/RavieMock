@@ -1,0 +1,56 @@
+/**
+ * Component Styles
+ * Reusable component-specific styles
+ */
+
+/* Bento grid utilities */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  grid-auto-rows: minmax(200px, auto);
+}
+
+.bento-item-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-item-wide {
+  grid-column: span 2;
+}
+
+.bento-item-tall {
+  grid-row: span 2;
+}
+
+/* Button variants using design tokens */
+.btn-primary {
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  color: var(--color-text-primary);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-glow-blue);
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background: var(--bg-white-5);
+  border: 2px solid var(--bg-white-20);
+  color: var(--color-text-primary);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-white-10);
+  transform: scale(1.05);
+}

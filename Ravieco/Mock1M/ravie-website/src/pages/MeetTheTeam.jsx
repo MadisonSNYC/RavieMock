@@ -460,19 +460,13 @@ export default function MeetTheTeam() {
                         {selectedTeamMember.projects.map((project, i) => {
                           // Get the actual project data from projects.js
                           const allProjects = getAllProjects();
-                          console.log('All projects:', allProjects.map(p => p.id));
-                          console.log('Looking for slug:', project.slug);
                           
                           const projectData = allProjects.find(p => p.id === project.slug);
-                          console.log('Found project data:', projectData);
-                          console.log('Project thumbnail field:', projectData?.thumbnail);
-                          console.log('ThumbnailMap:', thumbnailMap);
                           
                           // Use direct path or thumbnailMap
                           const thumbnailPath = projectData ? 
                             (thumbnailMap[projectData.thumbnail] || `/Thumbs/${projectData.thumbnail}`) : 
                             null;
-                          console.log('Final thumbnail path:', thumbnailPath);
                           
                           return (
                             <Link

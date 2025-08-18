@@ -2,8 +2,9 @@ import React, { useMemo, useEffect, useRef, useState } from 'react'
 import { CounterScrollColumn } from './CounterScrollColumn'
 import { Project, ProjectCard } from './ProjectCard'
 import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
-import { useScrollDriver } from '../../hooks/useScrollDriver'
+import { useVirtualScroll } from '../../hooks/useVirtualScroll'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
+import { SpotlightProvider } from './SpotlightContext'
 
 export interface GridViewportProps {
   projects: Project[]
@@ -16,6 +17,7 @@ export interface GridViewportProps {
  */
 export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const { prefersReducedMotion } = useReducedMotionContext()
   const [viewportHeight, setViewportHeight] = useState(
     typeof window !== 'undefined' ? window.innerHeight : 800
@@ -25,10 +27,10 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
   // Check for mobile breakpoint
   const isMobile = useBreakpoint('(max-width: 640px)')
   
-  // Use native scroll driver for smooth scrolling
-  const { scrollY } = useScrollDriver({
-    stiffness: 120,
-    damping: 28
+  // Use virtual scroll for instant response
+  const { scrollY } = useVirtualScroll(scrollRef, {
+    friction: 0.08,
+    maxVelocity: 120
   })
 
   // Update viewport height on resize
@@ -62,8 +64,10 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
   const directionsDesktop: Array<'up' | 'down'> = ['up', 'down']
   const directions = isMobile ? directionsMobile : directionsDesktop
   
-  // Speed adjustment for mobile
-  const columnSpeed = isMobile ? 0.45 : speed
+  // Speed adjustment for calmer motion
+  const desktopSpeed = 0.5
+  const mobileSpeed = 0.35
+  const columnSpeed = isMobile ? mobileSpeed : desktopSpeed
 
   // Mobile single column fallback for very small screens
   const isSingleColumn = typeof window !== 'undefined' && window.innerWidth < 480
@@ -87,38 +91,45 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
 
   // Desktop/Tablet sticky viewport layout
   return (
-    <section 
-      className="relative"
-      style={{ minHeight: scrollLength ? `calc(var(--nav-height, 0px) + ${scrollLength}px)` : '200vh' }}
-    >
-      {/* Sticky viewport container */}
-      <div 
-        ref={viewportRef}
-        className="sticky top-[var(--nav-height,0px)] h-[calc(100vh-var(--nav-height,0px))] overflow-hidden bg-black"
+    <section className="relative p-0 m-0 bg-black">
+      <div
+        ref={scrollRef}
+        className="portfolio-scroll w-full"
+        tabIndex={0}
+        role="region"
+        aria-label="Portfolio projects"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 h-full">
-          {columns.map((columnProjects, index) => (
-            <div 
-              key={`column-${index}`}
-              className="relative h-full overflow-hidden"
-            >
-              {columnProjects.length > 0 && (
-                <CounterScrollColumn
-                  items={columnProjects}
-                  direction={directions[index]}
-                  speed={columnSpeed}
-                  viewportHeight={viewportHeight}
-                  scrollY={scrollY}
-                  onHeightMeasured={(height) => {
-                    // Set scroll length based on column height
-                    if (!scrollLength && height > 0) {
-                      setScrollLength(height * 2) // 2x for good scroll range
-                    }
-                  }}
-                />
-              )}
+        <div
+          ref={viewportRef}
+          className="portfolio-viewport w-full"
+        >
+          <SpotlightProvider>
+            <div className="portfolio-grid grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-px h-full w-full bg-black">
+              {columns.map((columnProjects, index) => (
+                <div
+                  key={`column-${index}`}
+                  className="relative h-full overflow-hidden"
+                >
+                  {columnProjects.length > 0 && (
+                    <CounterScrollColumn
+                      items={columnProjects}
+                      direction={directions[index]}
+                      speed={columnSpeed}
+                      viewportHeight={viewportHeight}
+                      scrollY={scrollY}
+                      phase={index === 0 ? 0 : 0.5} // Stagger right column by half tile
+                      onHeightMeasured={(height) => {
+                        // Set scroll length based on column height
+                        if (!scrollLength && height > 0) {
+                          setScrollLength(height * 2) // 2x for good scroll range
+                        }
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          </SpotlightProvider>
         </div>
       </div>
     </section>

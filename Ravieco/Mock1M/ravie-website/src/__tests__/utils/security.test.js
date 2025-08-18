@@ -10,6 +10,23 @@ import {
   checkURLSecurity
 } from '../../utils/security'
 
+// Mock the env-validator module  
+vi.mock('../../utils/env-validator', () => ({
+  getEnv: vi.fn((key) => {
+    // Initialize global.mockEnvValues if not exists
+    if (!global.mockEnvValues) {
+      global.mockEnvValues = {}
+    }
+    
+    // Provide defaults for tests
+    if (key === 'NODE_ENV') return 'test'
+    if (key === 'VITE_ALLOWED_ORIGINS' && !global.mockEnvValues[key]) {
+      return 'https://ravie.co,https://www.ravie.co'
+    }
+    return global.mockEnvValues[key] || null
+  })
+}))
+
 describe('Security Utilities', () => {
   describe('getCSPHeader', () => {
     it('should generate valid CSP header', () => {
@@ -24,13 +41,14 @@ describe('Security Utilities', () => {
     })
 
     it('should include report URI if configured', () => {
-      const originalEnv = import.meta.env.VITE_CSP_REPORT_URI
-      import.meta.env.VITE_CSP_REPORT_URI = 'https://example.com/csp-report'
+      // Set mock env value
+      global.mockEnvValues.VITE_CSP_REPORT_URI = 'https://example.com/csp-report'
       
       const csp = getCSPHeader()
       expect(csp).toContain('report-uri https://example.com/csp-report')
       
-      import.meta.env.VITE_CSP_REPORT_URI = originalEnv
+      // Clean up
+      delete global.mockEnvValues.VITE_CSP_REPORT_URI
     })
   })
 
@@ -158,6 +176,7 @@ describe('Security Utilities', () => {
 
   describe('isAllowedOrigin', () => {
     it('should allow default origins', () => {
+      // Test already has defaults set in mock
       expect(isAllowedOrigin('http://localhost:5173')).toBe(true)
       expect(isAllowedOrigin('http://localhost:3000')).toBe(true)
       expect(isAllowedOrigin('https://ravie.co')).toBe(true)
@@ -170,13 +189,14 @@ describe('Security Utilities', () => {
     })
 
     it('should respect custom allowed origins from env', () => {
-      const originalEnv = import.meta.env.VITE_ALLOWED_ORIGINS
-      import.meta.env.VITE_ALLOWED_ORIGINS = 'https://custom.com,https://app.custom.com'
+      // Set custom origins
+      global.mockEnvValues.VITE_ALLOWED_ORIGINS = 'https://custom.com,https://app.custom.com'
       
       expect(isAllowedOrigin('https://custom.com')).toBe(true)
       expect(isAllowedOrigin('https://app.custom.com')).toBe(true)
       
-      import.meta.env.VITE_ALLOWED_ORIGINS = originalEnv
+      // Clean up
+      delete global.mockEnvValues.VITE_ALLOWED_ORIGINS
     })
   })
 

@@ -10,6 +10,7 @@ export interface CounterScrollColumnProps {
   speed?: number
   viewportHeight: number
   scrollY: MotionValue<number>
+  phase?: number // 0..1 of tile height, default 0
   onHeightMeasured?: (height: number) => void
 }
 
@@ -23,15 +24,23 @@ export function CounterScrollColumn({
   speed = 0.6,
   viewportHeight,
   scrollY,
+  phase = 0,
   onHeightMeasured
 }: CounterScrollColumnProps) {
   const columnRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const { prefersReducedMotion } = useReducedMotionContext()
   const [contentHeight, setContentHeight] = useState(0)
+  const [tileScale, setTileScale] = useState(0.5)
   
-  // Calculate content height based on items
-  const itemHeight = viewportHeight / 2 // Show 2 items per viewport
+  // Get tile scale from CSS variable
+  useEffect(() => {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--tile-scale');
+    const val = parseFloat(raw) || 0.5;
+    setTileScale(val);
+  }, []);
+  
+  const tileHeightPx = Math.max(0, viewportHeight * tileScale);
 
   // Measure actual content height after render
   useEffect(() => {
@@ -69,8 +78,11 @@ export function CounterScrollColumn({
   // Transform scrollY to column offset
   const baseOffset = useTransform(scrollY, (sy) => sign * sy * speed)
   
+  // Apply phase offset (e.g., 0.5 for half a tile)
+  const phasedOffset = useTransform(baseOffset, (v) => v + phase * tileHeightPx)
+  
   // Wrap into [-H, 0) range
-  const wrappedOffset = useTransform(baseOffset, (v) => {
+  const wrappedOffset = useTransform(phasedOffset, (v) => {
     if (contentHeight <= 0) return 0
     return wrapOffset(v % contentHeight, contentHeight)
   })
@@ -121,11 +133,9 @@ export function CounterScrollColumn({
   if (prefersReducedMotion) {
     return (
       <div className="relative h-full overflow-hidden" ref={columnRef}>
-        <div className="space-y-4 p-4">
+        <div className="">
           {items.map((project) => (
-            <div key={project.id} style={{ height: `${itemHeight}px` }}>
-              <ProjectCard project={project} />
-            </div>
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </div>
@@ -143,26 +153,16 @@ export function CounterScrollColumn({
         }}
       >
         {/* First set of items */}
-        <div className="column-list space-y-4 p-4">
+        <div className="column-list">
           {items.map((project) => (
-            <div 
-              key={`${project.id}-1`} 
-              style={{ height: `${itemHeight}px` }}
-            >
-              <ProjectCard project={project} />
-            </div>
+            <ProjectCard key={`${project.id}-1`} project={project} />
           ))}
         </div>
 
         {/* Duplicate set for seamless loop */}
-        <div className="column-list space-y-4 p-4">
+        <div className="column-list">
           {items.map((project) => (
-            <div 
-              key={`${project.id}-2`} 
-              style={{ height: `${itemHeight}px` }}
-            >
-              <ProjectCard project={project} />
-            </div>
+            <ProjectCard key={`${project.id}-2`} project={project} />
           ))}
         </div>
       </motion.div>

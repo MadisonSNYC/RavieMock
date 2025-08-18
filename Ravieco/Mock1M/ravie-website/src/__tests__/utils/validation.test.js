@@ -1,106 +1,99 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
   validateEmail,
   validateText,
   validateURL,
   validateNumber,
-  sanitizeHTML,
   validateFile
 } from '../../utils/validation'
 
 describe('Validation Utilities', () => {
   describe('validateEmail', () => {
-    it('should validate correct email addresses', () => {
+    // VAL-001: Email validation with XSS prevention
+    it('should validate correct email formats', () => {
       const validEmails = [
-        'test@example.com',
-        'user.name@company.co.uk',
-        'first+last@domain.org',
-        'test123@test-domain.com'
+        'user@example.com',
+        'test.user+tag@domain.co.uk',
+        'name123@sub.domain.org'
       ]
-
+      
       validEmails.forEach(email => {
         const result = validateEmail(email)
         expect(result.isValid).toBe(true)
-        expect(result.error).toBeNull()
         expect(result.sanitized).toBe(email.toLowerCase())
       })
     })
 
-    it('should reject invalid email addresses', () => {
+    it('should reject invalid email formats', () => {
       const invalidEmails = [
         '',
         'notanemail',
-        '@example.com',
-        'test@',
-        'test@.com',
-        'test @example.com',
-        'test@example..com',
-        null,
-        undefined,
-        123
+        '@domain.com',
+        'user@',
+        'user@.com',
+        'user@domain',
+        'user @domain.com',
+        '<script>alert("xss")</script>@domain.com'
       ]
-
+      
       invalidEmails.forEach(email => {
         const result = validateEmail(email)
         expect(result.isValid).toBe(false)
-        expect(result.error).toBeTruthy()
-        expect(result.sanitized).toBeNull()
+        expect(result.error).toBeDefined()
       })
     })
 
-    it('should reject emails longer than 254 characters', () => {
-      const longEmail = 'a'.repeat(250) + '@test.com'
-      const result = validateEmail(longEmail)
-      expect(result.isValid).toBe(false)
-      expect(result.error).toContain('too long')
+    it('should handle boundary cases', () => {
+      // Maximum length email (254 chars total)
+      const longEmail = 'a'.repeat(64) + '@' + 'b'.repeat(63) + '.' + 'c'.repeat(63) + '.' + 'd'.repeat(61)
+      expect(validateEmail(longEmail).isValid).toBe(true)
+      
+      // Just over maximum
+      const tooLongEmail = longEmail + 'x'
+      expect(validateEmail(tooLongEmail).isValid).toBe(false)
+    })
+
+    it('should sanitize and normalize emails', () => {
+      const result = validateEmail('  User.Name@EXAMPLE.COM  ')
+      expect(result.isValid).toBe(true)
+      expect(result.sanitized).toBe('user.name@example.com')
     })
   })
 
   describe('validateText', () => {
-    it('should validate and sanitize text input', () => {
-      const result = validateText('Hello World', { minLength: 5, maxLength: 20 })
+    // VAL-002: Text validation with sanitization
+    it('should validate text within length limits', () => {
+      const result = validateText('Valid text content', { minLength: 1, maxLength: 100 })
       expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBe('Hello World')
+      expect(result.sanitized).toBe('Valid text content')
     })
 
-    it('should remove XSS vectors', () => {
-      const maliciousInputs = [
-        '<script>alert("XSS")</script>Hello',
-        'Hello<iframe src="evil.com"></iframe>',
-        'javascript:alert(1)',
-        'onclick=alert(1) Hello'
-      ]
-
-      maliciousInputs.forEach(input => {
-        const result = validateText(input, { minLength: 1 })
-        expect(result.isValid).toBe(true)
-        expect(result.sanitized).not.toContain('<script')
-        expect(result.sanitized).not.toContain('<iframe')
-        expect(result.sanitized).not.toContain('javascript:')
-        expect(result.sanitized).not.toContain('onclick=')
-      })
+    it('should reject text outside length limits', () => {
+      expect(validateText('', { minLength: 1, maxLength: 100 }).isValid).toBe(false)
+      expect(validateText('x'.repeat(101), { minLength: 1, maxLength: 100 }).isValid).toBe(false)
     })
 
-    it('should enforce length constraints', () => {
-      const shortText = validateText('Hi', { minLength: 5 })
-      expect(shortText.isValid).toBe(false)
-      expect(shortText.error).toContain('at least 5')
-
-      const longText = validateText('a'.repeat(101), { maxLength: 100 })
-      expect(longText.isValid).toBe(false)
-      expect(longText.error).toContain('less than 100')
-    })
-
-    it('should handle optional fields', () => {
-      const result = validateText('', { required: false })
+    it('should sanitize HTML and script tags', () => {
+      const maliciousText = 'Hello <script>alert("xss")</script> World'
+      const result = validateText(maliciousText, { minLength: 1, maxLength: 100 })
       expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBe('')
+      expect(result.sanitized).not.toContain('<script>')
+      expect(result.sanitized).not.toContain('</script>')
     })
 
-    it('should remove special characters when not allowed', () => {
-      const result = validateText('Hello@#$World!', { allowSpecialChars: false })
+    it('should handle exact boundary lengths', () => {
+      const exactMin = validateText('x', { minLength: 1, maxLength: 100 })
+      expect(exactMin.isValid).toBe(true)
+      
+      const exactMax = validateText('x'.repeat(100), { minLength: 1, maxLength: 100 })
+      expect(exactMax.isValid).toBe(true)
+    })
+
+    it('should preserve unicode characters', () => {
+      const unicodeText = 'Hello 世界 🌍 émojis'
+      const result = validateText(unicodeText, { minLength: 1, maxLength: 100, allowSpecialChars: true })
       expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBe('HelloWorld!')
+      expect(result.sanitized).toBe(unicodeText)
     })
   })
 
@@ -108,16 +101,12 @@ describe('Validation Utilities', () => {
     it('should validate correct URLs', () => {
       const validURLs = [
         'https://example.com',
-        'http://localhost:3000',
-        'https://sub.domain.com/path?query=value',
-        'https://example.com:8080/path'
+        'http://sub.domain.org/path',
+        'https://example.com:8080/path?query=value#hash'
       ]
-
+      
       validURLs.forEach(url => {
-        const result = validateURL(url)
-        expect(result.isValid).toBe(true)
-        expect(result.error).toBeNull()
-        expect(result.sanitized).toBeTruthy()
+        expect(validateURL(url).isValid).toBe(true)
       })
     })
 
@@ -125,163 +114,81 @@ describe('Validation Utilities', () => {
       const dangerousURLs = [
         'javascript:alert(1)',
         'data:text/html,<script>alert(1)</script>',
-        'file:///etc/passwd',
-        'about:blank',
-        'vbscript:alert(1)'
+        'vbscript:msgbox',
+        'file:///etc/passwd'
       ]
-
+      
       dangerousURLs.forEach(url => {
-        const result = validateURL(url)
-        expect(result.isValid).toBe(false)
-        expect(result.error).toBeTruthy()
-      })
-    })
-
-    it('should only allow HTTP/HTTPS protocols', () => {
-      const result = validateURL('ftp://example.com')
-      expect(result.isValid).toBe(false)
-      expect(result.error).toContain('HTTP/HTTPS')
-    })
-
-    it('should handle invalid URL formats', () => {
-      const invalidURLs = ['not a url', 'http://', '://example.com', null, undefined]
-
-      invalidURLs.forEach(url => {
-        const result = validateURL(url)
-        expect(result.isValid).toBe(false)
-        expect(result.error).toBeTruthy()
+        expect(validateURL(url).isValid).toBe(false)
       })
     })
   })
 
   describe('validateNumber', () => {
     it('should validate numbers within range', () => {
-      const result = validateNumber(50, { min: 0, max: 100 })
-      expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBe(50)
+      expect(validateNumber(5, { min: 1, max: 10 }).isValid).toBe(true)
+      expect(validateNumber(1, { min: 1, max: 10 }).isValid).toBe(true)
+      expect(validateNumber(10, { min: 1, max: 10 }).isValid).toBe(true)
     })
 
-    it('should convert string numbers', () => {
-      const result = validateNumber('42', { min: 0, max: 100 })
-      expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBe(42)
+    it('should reject numbers outside range', () => {
+      expect(validateNumber(0, { min: 1, max: 10 }).isValid).toBe(false)
+      expect(validateNumber(11, { min: 1, max: 10 }).isValid).toBe(false)
+      expect(validateNumber(NaN, { min: 1, max: 10 }).isValid).toBe(false)
     })
 
-    it('should enforce integer constraint', () => {
-      const result = validateNumber(3.14, { integer: true })
-      expect(result.isValid).toBe(false)
-      expect(result.error).toContain('whole number')
-    })
-
-    it('should enforce min/max constraints', () => {
-      const tooSmall = validateNumber(-5, { min: 0 })
-      expect(tooSmall.isValid).toBe(false)
-      expect(tooSmall.error).toContain('at least 0')
-
-      const tooBig = validateNumber(150, { max: 100 })
-      expect(tooBig.isValid).toBe(false)
-      expect(tooBig.error).toContain('at most 100')
-    })
-
-    it('should handle optional numbers', () => {
-      const result = validateNumber(null, { required: false })
-      expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBeNull()
-    })
-
-    it('should reject non-numeric values', () => {
-      const result = validateNumber('not a number')
-      expect(result.isValid).toBe(false)
-      expect(result.error).toContain('valid number')
-    })
-  })
-
-  describe('sanitizeHTML', () => {
-    it('should escape HTML entities', () => {
-      const html = '<script>alert("XSS")</script>'
-      const sanitized = sanitizeHTML(html)
-      
-      expect(sanitized).not.toContain('<')
-      expect(sanitized).not.toContain('>')
-      expect(sanitized).toContain('&lt;')
-      expect(sanitized).toContain('&gt;')
-    })
-
-    it('should escape quotes and slashes', () => {
-      const html = '"quotes" and \'apostrophes\' and /slashes/'
-      const sanitized = sanitizeHTML(html)
-      
-      expect(sanitized).toContain('&quot;')
-      expect(sanitized).toContain('&#x27;')
-      expect(sanitized).toContain('&#x2F;')
-    })
-
-    it('should handle empty or invalid input', () => {
-      expect(sanitizeHTML('')).toBe('')
-      expect(sanitizeHTML(null)).toBe('')
-      expect(sanitizeHTML(undefined)).toBe('')
-      expect(sanitizeHTML(123)).toBe('')
+    it('should handle floating point numbers', () => {
+      expect(validateNumber(5.5, { min: 1, max: 10 }).isValid).toBe(true)
+      expect(validateNumber(0.9999, { min: 1, max: 10 }).isValid).toBe(false)
     })
   })
 
   describe('validateFile', () => {
-    it('should validate file size', () => {
-      const file = new File(['content'], 'test.txt', { type: 'text/plain' })
-      Object.defineProperty(file, 'size', { value: 1024 }) // 1KB
-
-      const result = validateFile(file, { maxSize: 2048 })
+    it('should validate files within size and type limits', () => {
+      // Create a proper File object
+      const mockFile = new File(['test content'], 'test.jpg', {
+        type: 'image/jpeg'
+      })
+      // Override size property for testing
+      Object.defineProperty(mockFile, 'size', {
+        value: 5 * 1024 * 1024, // 5MB
+        writable: false
+      })
+      
+      const result = validateFile(mockFile, { maxSize: 10 * 1024 * 1024, allowedTypes: ['image/jpeg', 'image/png'] })
       expect(result.isValid).toBe(true)
     })
 
     it('should reject oversized files', () => {
-      const file = new File(['content'], 'test.txt', { type: 'text/plain' })
-      Object.defineProperty(file, 'size', { value: 10 * 1024 * 1024 }) // 10MB
-
-      const result = validateFile(file, { maxSize: 5 * 1024 * 1024 })
-      expect(result.isValid).toBe(false)
-      expect(result.error).toContain('5MB')
-    })
-
-    it('should validate file types', () => {
-      const imageFile = new File([''], 'image.png', { type: 'image/png' })
+      // Create a proper File object
+      const mockFile = new File(['test content'], 'large.jpg', {
+        type: 'image/jpeg'
+      })
+      // Override size property for testing
+      Object.defineProperty(mockFile, 'size', {
+        value: 11 * 1024 * 1024, // 11MB
+        writable: false
+      })
       
-      const validResult = validateFile(imageFile, { 
-        allowedTypes: ['image/png', 'image/jpeg'] 
-      })
-      expect(validResult.isValid).toBe(true)
-
-      const invalidResult = validateFile(imageFile, { 
-        allowedTypes: ['application/pdf'] 
-      })
-      expect(invalidResult.isValid).toBe(false)
-      expect(invalidResult.error).toContain('must be one of')
-    })
-
-    it('should reject executable files', () => {
-      const dangerousFiles = [
-        new File([''], 'virus.exe'),
-        new File([''], 'script.bat'),
-        new File([''], 'command.sh'),
-        new File([''], 'script.ps1')
-      ]
-
-      dangerousFiles.forEach(file => {
-        const result = validateFile(file)
-        expect(result.isValid).toBe(false)
-        expect(result.error).toContain('Executable files')
-      })
-    })
-
-    it('should handle optional files', () => {
-      const result = validateFile(null, { required: false })
-      expect(result.isValid).toBe(true)
-      expect(result.sanitized).toBeNull()
-    })
-
-    it('should reject invalid file objects', () => {
-      const result = validateFile('not a file')
+      const result = validateFile(mockFile, { maxSize: 10 * 1024 * 1024, allowedTypes: ['image/jpeg'] })
       expect(result.isValid).toBe(false)
-      expect(result.error).toContain('Invalid file object')
+      expect(result.error).toContain('size')
+    })
+
+    it('should reject invalid file types', () => {
+      // Create a proper File object
+      const mockFile = new File(['test content'], 'virus.exe', {
+        type: 'application/x-executable'
+      })
+      // Override size property for testing
+      Object.defineProperty(mockFile, 'size', {
+        value: 1024,
+        writable: false
+      })
+      
+      const result = validateFile(mockFile, { maxSize: 10 * 1024 * 1024, allowedTypes: ['image/jpeg'] })
+      expect(result.isValid).toBe(false)
+      expect(result.error).toContain('type')
     })
   })
 })

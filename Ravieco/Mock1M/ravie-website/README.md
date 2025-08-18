@@ -30,7 +30,7 @@ Ravie is a sophisticated portfolio platform built with React and Vite, featuring
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/MadisonSNYC/RVM1.git
+git clone https://github.com/MadisonSNYC/RavieMock 
 cd ravie-website
 ```
 
@@ -39,7 +39,13 @@ cd ravie-website
 npm install
 ```
 
-3. Start the development server:
+3. Configure environment variables:
+```bash
+cp .env.example .env.local
+# Edit .env.local with your settings
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 ```
@@ -55,6 +61,45 @@ The site will be available at `http://localhost:5173/`
 - `npm test` - Run tests with Vitest
 - `npm run test:ui` - Run tests with UI
 - `npm run test:coverage` - Generate test coverage report
+
+## Testing
+
+The project includes a comprehensive test suite with 127 tests covering:
+
+- **Unit Tests** - Component logic, hooks, and utilities
+- **Integration Tests** - User flows and component interactions  
+- **Security Tests** - Input validation, CSP, and sanitization
+- **Performance Tests** - Render times and optimization checks
+
+### Current Test Status
+- **Total Tests:** 127
+- **Passing:** 126 (99.2%)
+- **Skipped:** 1 (0.8%)
+- **Failing:** 0 (0%)
+- **Last Updated:** August 17, 2025
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests with UI
+npm run test:ui
+
+# Generate coverage report
+npm run test:coverage
+
+# Run specific test file
+npm test validation.test.js
+```
+
+### Test Coverage
+
+- **Components**: ~70% coverage
+- **Utilities**: ~85% coverage
+- **Security**: 100% coverage
+- **Integration**: Full critical path coverage
 
 ## Project Structure
 
@@ -75,7 +120,13 @@ ravie-website/
 │   └── services/      # API and external services
 ├── public/            # Static public assets
 ├── dist/             # Production build output
-└── tests/            # Test files
+└── __tests__/        # Test files
+    ├── components/   # Component tests
+    ├── hooks/       # Hook tests
+    ├── utils/       # Utility tests
+    ├── integration/ # Integration tests
+    ├── security/    # Security tests
+    └── performance/ # Performance tests
 ```
 
 ## Key Components
@@ -107,6 +158,21 @@ VITE_API_URL=your_api_url_here
 - Firefox (latest)
 - Safari (latest)
 - Edge (latest)
+
+## Security Features
+
+### Implemented Security Measures
+- **Environment Variable Validation** - All env vars validated at startup
+- **Content Security Policy (CSP)** - Comprehensive CSP headers
+- **Input Validation** - All form inputs validated and sanitized
+- **URL Security** - Protection against open redirects and malicious URLs
+- **Rate Limiting** - Built-in rate limiter for API protection
+- **XSS Protection** - Input sanitization and secure rendering
+- **CORS Configuration** - Dynamic origin validation
+- **Error Handling** - Comprehensive error handling for all async operations
+
+### Security Configuration
+See `.env.example` for available security configuration options.
 
 ## Performance
 

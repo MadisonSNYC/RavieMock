@@ -214,7 +214,7 @@ class PerformanceMonitor {
       
       // Log in development
       if (process.env.NODE_ENV === 'development') {
-        console.log(`[Performance] ${name}: ${metric.value}ms`)
+        logger.info('[Performance] Metric', { name, value: `${metric.value}ms` })
       }
     } catch (error) {
       logger.error('Failed to record metric', {

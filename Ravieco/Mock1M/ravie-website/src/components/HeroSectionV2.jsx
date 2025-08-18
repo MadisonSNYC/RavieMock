@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { Volume2, VolumeX, X, Maximize2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import logger from '../services/logger'
 
 export default function HeroSectionV2() {
   const canvasRef = useRef(null)
@@ -42,7 +43,7 @@ export default function HeroSectionV2() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(err => {
-        console.log('Autoplay prevented:', err)
+        logger.debug('Autoplay prevented', { error: err.message })
       })
     }
   }, [])

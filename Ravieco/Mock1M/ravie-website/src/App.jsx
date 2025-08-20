@@ -25,6 +25,11 @@ const FoldStrict = lazy(() => import('./routes/dev/FoldStrict'))
 const CoderopsPure = lazy(() => import('./routes/dev/CoderopsPure'))
 const CodropsWorking = lazy(() => import('./routes/dev/CodropsWorking'))
 const Working3DFold = lazy(() => import('./routes/dev/Working3DFold'))
+const Complete3DFoldAnalysis = lazy(() => import('./routes/dev/Complete3DFoldAnalysis'))
+const Working3DFoldWithAnalysis = lazy(() => import('./routes/dev/Working3DFoldWithAnalysis'))
+const Reversed3DFoldTemplate = lazy(() => import('./routes/dev/Reversed3DFoldTemplate'))
+const Reversed3DFoldTemplateFixed = lazy(() => import('./routes/dev/Reversed3DFoldTemplateFixed'))
+const Reversed3DFoldStatic = lazy(() => import('./routes/dev/Reversed3DFoldStatic'))
 
 // Loading component
 const PageLoader = () => (
@@ -69,6 +74,11 @@ function App() {
               <Route path="/dev/codrops" element={<CoderopsPure />} />
               <Route path="/dev/working" element={<CodropsWorking />} />
               <Route path="/dev/3dfold" element={<Working3DFold />} />
+              <Route path="/dev/analysis" element={<Complete3DFoldAnalysis />} />
+              <Route path="/dev/combined" element={<Working3DFoldWithAnalysis />} />
+              <Route path="/dev/reversed" element={<Reversed3DFoldTemplate />} />
+              <Route path="/dev/reversed-fixed" element={<Reversed3DFoldTemplateFixed />} />
+              <Route path="/dev/reversed-static" element={<Reversed3DFoldStatic />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

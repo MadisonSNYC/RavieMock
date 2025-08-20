@@ -19,6 +19,12 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const ProjectPage = lazy(() => import('./pages/ProjectPage'))
 const ProjectDirectory = lazy(() => import('./components/ProjectDirectory'))
 const PortfolioPage = lazy(() => import('./routes/portfolio/index'))
+const ProjectDetailPage = lazy(() => import('./routes/project/ProjectDetailPage'))
+const FoldTest = lazy(() => import('./routes/dev/FoldTest'))
+const FoldStrict = lazy(() => import('./routes/dev/FoldStrict'))
+const CoderopsPure = lazy(() => import('./routes/dev/CoderopsPure'))
+const CodropsWorking = lazy(() => import('./routes/dev/CodropsWorking'))
+const Working3DFold = lazy(() => import('./routes/dev/Working3DFold'))
 
 // Loading component
 const PageLoader = () => (
@@ -54,10 +60,15 @@ function App() {
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/portfolio/:slug" element={<PortfolioPage />} />
               <Route path="/work/:id" element={<ProjectPage />} />
-              <Route path="/project/:id" element={<ProjectPage />} />
+              <Route path="/project/:slug" element={<ProjectDetailPage />} />
               <Route path="/about" element={<AboutPageNew />} />
               <Route path="/about-old" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/dev/foldtest" element={<FoldTest />} />
+              <Route path="/dev/foldstrict" element={<FoldStrict />} />
+              <Route path="/dev/codrops" element={<CoderopsPure />} />
+              <Route path="/dev/working" element={<CodropsWorking />} />
+              <Route path="/dev/3dfold" element={<Working3DFold />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

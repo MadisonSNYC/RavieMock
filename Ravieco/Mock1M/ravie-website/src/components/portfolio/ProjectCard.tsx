@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { VideoPreview, VideoPreviewHandle } from './VideoPreview'
 import TitleOverlay from './TitleOverlay'
 import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
@@ -75,12 +74,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <article
       data-muted={isMuted ? 'true' : 'false'}
-      className="portfolio-card group relative"
+      className="portfolio-card group relative h-full"
     >
       <Link
         to={`/portfolio/${project.slug}`}
         state={{ background: location }}
-        className="block relative portfolio-tile w-full overflow-hidden rounded-none"
+        className="block relative w-full h-full overflow-hidden rounded-none"
         aria-label={project.title}
         onMouseEnter={handlePointerEnter}
         onMouseLeave={handlePointerLeave}
@@ -89,18 +88,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
         onFocus={handleFocus}
         onBlur={handleBlur}
       >
-        <motion.div layoutId={`card-${project.id}`} className="w-full h-full">
-          <motion.div layoutId={`media-${project.id}`} className="spotlight-content w-full h-full">
+        <div className="w-full h-full">
+          <div className="spotlight-content w-full h-full">
             <VideoPreview
               ref={videoRef}
               posterSrc={project.posterSrc}
               previewSrc={project.previewSrc}
               autoPlayAllowed={!prefersReducedMotion}
-              className="w-full h-full rounded-none"
+              className="w-full h-full rounded-none object-cover"
             />
-          </motion.div>
+          </div>
           
-          <motion.div layoutId={`title-${project.id}`}>
+          <div>
             <TitleOverlay
               title={project.title}
               client={project.client}
@@ -109,8 +108,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
               compact={true}
               className=""
             />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </Link>
       
       {/* Visible focus ring for a11y */}

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
+import { scrambleTo, isTouch } from './TextScramble'
 
 type Props = {
   title: string
@@ -26,16 +27,26 @@ export default function TitleOverlay({
   className = ''
 }: Props) {
   const { prefersReducedMotion } = useReducedMotionContext()
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  
+  // Apply scramble effect on show (desktop only, not reduced motion)
+  useEffect(() => {
+    if (!show) return
+    if (isTouch() || prefersReducedMotion) return
+    if (titleRef.current) {
+      scrambleTo(titleRef.current, title, { duration: 220 })
+    }
+  }, [show, title, prefersReducedMotion])
   
   const base =
     "pointer-events-none absolute inset-0 flex items-end p-3 sm:p-4 lg:p-5 text-white"
   const scrim =
     "absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent"
 
-  // reduced-motion: disable y animation
+  // Simple fade without y-axis movement to prevent bounce
   const variants = {
-    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 16 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 }
   }
 
   return (
@@ -46,11 +57,11 @@ export default function TitleOverlay({
         animate={show ? "visible" : "hidden"}
         variants={variants}
         transition={{ 
-          duration: prefersReducedMotion ? 0 : 0.28, 
-          ease: [0.2, 0.8, 0.2, 1] 
+          duration: prefersReducedMotion ? 0 : 0.2, 
+          ease: "easeOut"
         }}
         className="relative z-10 max-w-[90%]"
-        style={{ willChange: prefersReducedMotion ? "auto" : "transform, opacity" }}
+        style={{ willChange: prefersReducedMotion ? "auto" : "opacity" }}
       >
         {/* Meta row */}
         <div className="mb-2 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/80">
@@ -71,6 +82,7 @@ export default function TitleOverlay({
         </div>
         {/* Title */}
         <h3
+          ref={titleRef}
           className={`font-semibold leading-tight drop-shadow ${
             compact
               ? "text-base sm:text-lg"

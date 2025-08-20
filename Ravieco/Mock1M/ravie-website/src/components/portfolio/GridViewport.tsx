@@ -1,10 +1,11 @@
 import React, { useMemo, useEffect, useRef, useState } from 'react'
-import { CounterScrollColumn } from './CounterScrollColumn'
+import { MasonryColumn } from './MasonryColumn'
 import { Project, ProjectCard } from './ProjectCard'
 import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
 import { useVirtualScroll } from '../../hooks/useVirtualScroll'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { SpotlightProvider } from './SpotlightContext'
+import CustomCursor from './CustomCursor'
 
 export interface GridViewportProps {
   projects: Project[]
@@ -27,10 +28,10 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
   // Check for mobile breakpoint
   const isMobile = useBreakpoint('(max-width: 640px)')
   
-  // Use virtual scroll for instant response
+  // Use virtual scroll for smooth, responsive scrolling
   const { scrollY } = useVirtualScroll(scrollRef, {
-    friction: 0.08,
-    maxVelocity: 120
+    friction: 0.15,
+    maxVelocity: 60
   })
 
   // Update viewport height on resize
@@ -43,13 +44,13 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Distribute projects round-robin across 2 columns only
+  // Distribute projects round-robin across 3 columns
   const columns = useMemo(() => {
-    // Force 2 columns for desktop 2×2 grid
-    const numColumns = 2
+    // Force 3 columns for desktop grid
+    const numColumns = 3
     
     // Initialize columns array
-    const cols: Project[][] = [[], []]
+    const cols: Project[][] = [[], [], []]
     
     // Round-robin distribution
     projects.forEach((project, index) => {
@@ -59,14 +60,14 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
     return cols
   }, [projects])
 
-  // Direction policy: mobile = both down, desktop = counter-scroll
-  const directionsMobile: Array<'up' | 'down'> = ['down', 'down']
-  const directionsDesktop: Array<'up' | 'down'> = ['up', 'down']
+  // Direction policy: mobile = all down, desktop = alternating counter-scroll
+  const directionsMobile: Array<'up' | 'down'> = ['down', 'down', 'down']
+  const directionsDesktop: Array<'up' | 'down'> = ['up', 'down', 'up']
   const directions = isMobile ? directionsMobile : directionsDesktop
   
-  // Speed adjustment for calmer motion
-  const desktopSpeed = 0.5
-  const mobileSpeed = 0.35
+  // Reduced speed for calmer, smoother motion
+  const desktopSpeed = 0.25
+  const mobileSpeed = 0.2
   const columnSpeed = isMobile ? mobileSpeed : desktopSpeed
 
   // Mobile single column fallback for very small screens
@@ -95,6 +96,7 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
       <div
         ref={scrollRef}
         className="portfolio-scroll w-full"
+        style={{ height: computedScrollLength }}
         tabIndex={0}
         role="region"
         aria-label="Portfolio projects"
@@ -104,24 +106,25 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
           className="portfolio-viewport w-full"
         >
           <SpotlightProvider>
-            <div className="portfolio-grid grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-px h-full w-full bg-black">
+            <div className="portfolio-grid grid grid-cols-1 sm:grid-cols-3 gap-0 sm:gap-4 h-full w-full bg-black">
               {columns.map((columnProjects, index) => (
                 <div
                   key={`column-${index}`}
                   className="relative h-full overflow-hidden"
                 >
                   {columnProjects.length > 0 && (
-                    <CounterScrollColumn
+                    <MasonryColumn
                       items={columnProjects}
                       direction={directions[index]}
                       speed={columnSpeed}
                       viewportHeight={viewportHeight}
                       scrollY={scrollY}
-                      phase={index === 0 ? 0 : 0.5} // Stagger right column by half tile
+                      phase={index * 0.33} // Stagger columns by 1/3 tile each
                       onHeightMeasured={(height) => {
                         // Set scroll length based on column height
                         if (!scrollLength && height > 0) {
-                          setScrollLength(height * 2) // 2x for good scroll range
+                          // Use 1.5x height for smoother scrolling
+                          setScrollLength(Math.max(height * 1.5, viewportHeight * 3))
                         }
                       }}
                     />
@@ -132,6 +135,7 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
           </SpotlightProvider>
         </div>
       </div>
+      {!prefersReducedMotion && <CustomCursor />}
     </section>
   )
 }

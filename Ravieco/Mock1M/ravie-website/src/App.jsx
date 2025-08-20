@@ -1,12 +1,10 @@
 import './App.css'
 import { lazy, Suspense, useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import HeaderAdvanced from './components/HeaderAdvanced'
+import HeaderMinimal from './components/HeaderMinimal'
 import Footer from './components/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
-import SmartCTA from './components/SmartCTA'
 import ScrollToTop from './components/ScrollToTop'
-import PersistentCTA from './components/PersistentCTA'
 import { IntroSequence } from './components/intro'
 
 // Lazy load pages for code splitting
@@ -30,6 +28,13 @@ const Working3DFoldWithAnalysis = lazy(() => import('./routes/dev/Working3DFoldW
 const Reversed3DFoldTemplate = lazy(() => import('./routes/dev/Reversed3DFoldTemplate'))
 const Reversed3DFoldTemplateFixed = lazy(() => import('./routes/dev/Reversed3DFoldTemplateFixed'))
 const Reversed3DFoldStatic = lazy(() => import('./routes/dev/Reversed3DFoldStatic'))
+const Reversed3DFoldEnhanced = lazy(() => import('./routes/dev/Reversed3DFoldEnhanced'))
+const Reversed3DFoldClean = lazy(() => import('./routes/dev/Reversed3DFoldClean'))
+const ProjectGalleryComplete = lazy(() => import('./routes/dev/ProjectGalleryComplete'))
+const Cohesive3DPortfolio = lazy(() => import('./routes/dev/Cohesive3DPortfolio'))
+const Portfolio3DLight = lazy(() => import('./routes/dev/Portfolio3DLight'))
+const PortfolioInfiniteScroll = lazy(() => import('./routes/dev/PortfolioInfiniteScroll'))
+const Backup3DLight = lazy(() => import('./routes/dev/backup-3d-light'))
 
 // Loading component
 const PageLoader = () => (
@@ -53,19 +58,22 @@ function App() {
       {/* Main App Content */}
       <div className="min-h-screen bg-black" id="main-content" tabIndex={-1}>
         <ScrollToTop />
-        <HeaderAdvanced />
-        <Suspense fallback={<div className="w-12 h-12" />}>
+        <HeaderMinimal />
+        {/* Project Directory Sidebar - Temporarily Hidden */}
+        {/* <Suspense fallback={<div className="w-12 h-12" />}>
           <ProjectDirectory />
-        </Suspense>
+        </Suspense> */}
         <main>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<PortfolioPage />} />
+              <Route path="/:slug" element={<PortfolioPage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/work" element={<WorkPage />} />
-              <Route path="/portfolio" element={<PortfolioPage />} />
-              <Route path="/portfolio/:slug" element={<PortfolioPage />} />
               <Route path="/work/:id" element={<ProjectPage />} />
               <Route path="/project/:slug" element={<ProjectDetailPage />} />
+              <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/portfolio/:slug" element={<PortfolioPage />} />
               <Route path="/about" element={<AboutPageNew />} />
               <Route path="/about-old" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
@@ -79,13 +87,18 @@ function App() {
               <Route path="/dev/reversed" element={<Reversed3DFoldTemplate />} />
               <Route path="/dev/reversed-fixed" element={<Reversed3DFoldTemplateFixed />} />
               <Route path="/dev/reversed-static" element={<Reversed3DFoldStatic />} />
+              <Route path="/dev/reversed-enhanced" element={<Reversed3DFoldEnhanced />} />
+              <Route path="/dev/reversed-clean" element={<Reversed3DFoldClean />} />
+              <Route path="/dev/gallery-complete" element={<ProjectGalleryComplete />} />
+              <Route path="/dev/cohesive" element={<Cohesive3DPortfolio />} />
+              <Route path="/dev/portfolio-light" element={<Portfolio3DLight />} />
+              <Route path="/dev/portfolio-infinite" element={<PortfolioInfiniteScroll />} />
+              <Route path="/dev/backup-3d-light" element={<Backup3DLight />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </main>
         <Footer />
-        {location.pathname !== '/contact' && <SmartCTA />}
-        {location.pathname !== '/contact' && <PersistentCTA />}
       </div>
     </ErrorBoundary>
   )

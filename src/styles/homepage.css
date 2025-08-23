@@ -1,0 +1,375 @@
+/* ===================================
+   HOMEPAGE STYLES - REFACTORED
+   =================================== */
+
+/* CSS Custom Properties */
+:root {
+  --homepage-tile-scale: 0.64;
+  --homepage-tile-scale-mobile: 0.56;
+  --homepage-border-radius: 24px;
+  --homepage-border-radius-large: 40px;
+  --homepage-transition-smooth: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  --homepage-shadow-base: 0 10px 40px rgba(0, 0, 0, 0.3);
+  --homepage-shadow-hover: 0 30px 80px rgba(0, 0, 0, 0.4), 0 0 100px rgba(255, 255, 255, 0.05);
+}
+
+/* ===================================
+   BASE LAYOUT & STRUCTURE
+   =================================== */
+
+html.homepage-active {
+  scroll-behavior: smooth;
+}
+
+.homepage-single-column {
+  --columns: 1;
+  --tile-scale: var(--homepage-tile-scale);
+  position: relative;
+  min-height: 100vh;
+  /* Ensure header is visible above atmospheric effects */
+  padding-top: 80px; /* Account for fixed header */
+}
+
+/* ===================================
+   ATMOSPHERIC BACKGROUND EFFECTS
+   =================================== */
+
+/* Primary atmospheric layer */
+.homepage-single-column::before {
+  content: '';
+  position: fixed;
+  top: 80px; /* Start below header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU acceleration */
+  background: 
+    /* White smoke layers */
+    radial-gradient(ellipse 200% 100% at 20% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 40%, transparent 70%),
+    radial-gradient(ellipse 150% 80% at 80% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.06) 35%, transparent 60%),
+    radial-gradient(ellipse 180% 120% at 50% 70%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.05) 45%, transparent 75%),
+    radial-gradient(ellipse 120% 90% at 10% 80%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.07) 30%, transparent 65%),
+    radial-gradient(ellipse 160% 110% at 90% 60%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 50%, transparent 80%),
+    /* Colored tints */
+    radial-gradient(ellipse 300% 200% at 30% 40%, rgba(100, 150, 255, 0.08) 0%, rgba(100, 150, 255, 0.02) 30%, transparent 60%),
+    radial-gradient(ellipse 250% 150% at 70% 60%, rgba(150, 100, 255, 0.06) 0%, rgba(150, 100, 255, 0.015) 35%, transparent 70%),
+    /* Base gradient */
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: -2;
+  opacity: 0.8;
+  animation: atmosphereFlow 25s ease-in-out infinite;
+}
+
+/* Secondary floating smoke layer */
+.homepage-single-column::after {
+  content: '';
+  position: fixed;
+  top: 80px; /* Start below header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU acceleration */
+  background: 
+    radial-gradient(ellipse 100% 60% at 15% 15%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 25%, transparent 50%),
+    radial-gradient(ellipse 80% 100% at 85% 25%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 30%, transparent 55%),
+    radial-gradient(ellipse 90% 70% at 25% 85%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 60%),
+    radial-gradient(ellipse 110% 80% at 75% 90%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 25%, transparent 45%);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.6;
+  animation: smokeWisps 30s ease-in-out infinite reverse;
+}
+
+/* ===================================
+   ANIMATION KEYFRAMES
+   =================================== */
+
+@keyframes atmosphereFlow {
+  0%, 100% { 
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  25% { 
+    transform: translate3d(-15px, -20px, 0) scale(1.05) rotate(1deg);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translate3d(10px, -10px, 0) scale(0.98) rotate(-0.5deg);
+    opacity: 0.7;
+  }
+  75% { 
+    transform: translate3d(20px, -25px, 0) scale(1.02) rotate(0.8deg);
+    opacity: 0.5;
+  }
+}
+
+@keyframes smokeWisps {
+  0%, 100% { 
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    opacity: 0.6;
+  }
+  33% { 
+    transform: translate3d(25px, -15px, 0) scale(1.08) rotate(-1deg);
+    opacity: 0.4;
+  }
+  66% { 
+    transform: translate3d(-20px, -30px, 0) scale(0.95) rotate(1.2deg);
+    opacity: 0.5;
+  }
+}
+
+@keyframes smokeShift {
+  0%, 100% { 
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.6;
+  }
+  33% { 
+    transform: translate3d(-5px, -8px, 0) scale(1.02);
+    opacity: 0.4;
+  }
+  66% { 
+    transform: translate3d(8px, -5px, 0) scale(0.98);
+    opacity: 0.5;
+  }
+}
+
+/* ===================================
+   SMOOTH GRID LAYOUT
+   =================================== */
+
+.homepage-smooth-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.homepage-smooth-container:active {
+  cursor: grabbing;
+}
+
+.homepage-smooth-content {
+  will-change: transform;
+  position: relative;
+}
+
+.homepage-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px 0;
+  gap: 4rem;
+}
+
+.homepage-single-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 4rem;
+}
+
+.homepage-project-card {
+  width: 90vw;
+  max-width: 1400px;
+  height: calc(100vh * var(--homepage-tile-scale));
+  position: relative;
+  z-index: 10;
+}
+
+.homepage-scroll-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.homepage-atmosphere {
+  position: fixed;
+  top: 80px; /* Start below header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.smoke-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+}
+
+.smoke-layer-1 {
+  background: radial-gradient(ellipse 200% 100% at 30% 40%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  animation: smokeShift 20s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.smoke-layer-2 {
+  background: radial-gradient(ellipse 150% 120% at 70% 60%, rgba(255, 255, 255, 0.12) 0%, transparent 65%);
+  animation: smokeShift 25s ease-in-out infinite reverse;
+  animation-delay: 5s;
+}
+
+.smoke-layer-3 {
+  background: radial-gradient(ellipse 180% 90% at 20% 80%, rgba(100, 150, 255, 0.08) 0%, transparent 60%);
+  animation: atmosphereFlow 30s ease-in-out infinite;
+  animation-delay: 10s;
+}
+
+.smoke-layer-4 {
+  background: radial-gradient(ellipse 140% 110% at 80% 30%, rgba(150, 100, 255, 0.06) 0%, transparent 55%);
+  animation: smokeWisps 35s ease-in-out infinite;
+  animation-delay: 15s;
+}
+
+/* ===================================
+   PROJECT TILES
+   =================================== */
+
+.homepage-tile-smooth {
+  width: 90vw;
+  max-width: 1400px;
+  height: calc(100vh * var(--homepage-tile-scale));
+  position: relative;
+  z-index: 10; /* Above all atmospheric effects */
+}
+
+.homepage-tile-smooth .portfolio-card {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--homepage-border-radius) !important;
+  overflow: hidden;
+  position: relative;
+  transition: var(--homepage-transition-smooth);
+  box-shadow: var(--homepage-shadow-base);
+}
+
+.homepage-tile-smooth .portfolio-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: var(--homepage-shadow-hover);
+}
+
+/* ===================================
+   CARD SMOKE EFFECTS
+   =================================== */
+
+.homepage-tile-smooth .portfolio-card::before {
+  content: '';
+  position: absolute;
+  inset: -30px;
+  background: 
+    radial-gradient(ellipse 120% 80% at 30% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%),
+    radial-gradient(ellipse 100% 60% at 70% 80%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.06) 35%, transparent 65%),
+    radial-gradient(ellipse 80% 120% at 50% 50%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%),
+    radial-gradient(ellipse 140% 90% at 20% 60%, rgba(100, 150, 255, 0.08) 0%, rgba(100, 150, 255, 0.02) 25%, transparent 50%),
+    radial-gradient(ellipse 110% 70% at 80% 40%, rgba(150, 100, 255, 0.06) 0%, rgba(150, 100, 255, 0.015) 30%, transparent 55%);
+  border-radius: var(--homepage-border-radius-large);
+  opacity: 0.9;
+  z-index: -5;
+  animation: smokeShift 15s ease-in-out infinite;
+}
+
+/* ===================================
+   LEGACY SUPPORT STYLES
+   =================================== */
+
+/* Legacy grid styles for backward compatibility */
+.homepage-single-column .portfolio-scroll {
+  scroll-behavior: smooth;
+}
+
+.homepage-single-column .portfolio-grid {
+  grid-template-columns: 1fr;
+  gap: 3rem 0;
+  padding: 2rem 0;
+  justify-items: center;
+}
+
+.homepage-single-column .portfolio-tile {
+  width: 90vw;
+  max-width: 1400px;
+  height: calc(100vh * var(--homepage-tile-scale));
+  margin-bottom: 3rem;
+}
+
+.homepage-single-column .portfolio-card {
+  border-radius: var(--homepage-border-radius) !important;
+  overflow: hidden;
+  transition: var(--homepage-transition-smooth);
+  box-shadow: var(--homepage-shadow-base);
+}
+
+.homepage-single-column .portfolio-card:hover {
+  border-radius: var(--homepage-border-radius) !important;
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--homepage-shadow-hover);
+}
+
+.homepage-single-column .portfolio-card * {
+  border-radius: 0 !important;
+}
+
+.homepage-single-column .portfolio-card .spotlight-content,
+.homepage-single-column .portfolio-card video,
+.homepage-single-column .portfolio-card img,
+.homepage-single-column .portfolio-card canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.homepage-single-column .portfolio-card:hover .spotlight-content,
+.homepage-single-column .portfolio-card:hover video,
+.homepage-single-column .portfolio-card:hover img {
+  transform: scale(1.05);
+}
+
+/* ===================================
+   ACCESSIBILITY & UX
+   =================================== */
+
+.homepage-tile:focus-within,
+.homepage-tile-smooth:focus-within {
+  outline: 2px solid var(--accent-color, #007aff);
+  outline-offset: 4px;
+}
+
+.homepage-loader {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --homepage-tile-scale: var(--homepage-tile-scale-mobile);
+  }
+  
+  .homepage-tile-smooth {
+    width: 95vw;
+  }
+  
+  .homepage-grid-wrapper {
+    padding: 50px 0;
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .homepage-tile-smooth {
+    max-width: 1400px;
+  }
+}

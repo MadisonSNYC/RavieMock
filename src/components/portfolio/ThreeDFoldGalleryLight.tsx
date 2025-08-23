@@ -30,7 +30,7 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
         panels.forEach((panel) => {
           const content = panel.querySelector('.fold-content-light') as HTMLElement
           if (content) {
-            content.style.transform = `translateX(${-position}px)`
+            content.style.transform = `translateY(${-position}px)`
           }
         })
         
@@ -116,20 +116,21 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
         
         .fold-content-light {
           display: flex;
-          height: 100%;
-          width: max-content;
+          flex-direction: column;
+          width: 100%;
+          height: max-content;
           will-change: transform;
           transition: none;
         }
         
         .tile-wrapper {
-          width: 45vw;
-          height: 100%;
+          width: 100%;
+          height: 45vh;
           flex-shrink: 0;
           display: flex;
         }
         
-        /* CLEAN DEPTH - Z-axis layering */
+        /* VERTICAL SLOT MACHINE - Z-axis layering */
         .fold-panel-light-0 {
           transform: translate3d(0, 0, 100px) scale(1.02);
           z-index: 4;
@@ -137,35 +138,35 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
         }
         
         .fold-panel-light-1 {
-          transform-origin: left center;
-          transform: translate3d(100%, 0, 50px) rotateY(35deg) scale(1);
+          transform-origin: center top;
+          transform: translate3d(0, 100%, 50px) rotateX(35deg) scale(1);
           z-index: 3;
           box-shadow: 0 12px 30px rgba(0,0,0,0.14);
         }
         
         .fold-panel-light-2 {
-          transform-origin: left center;
-          transform: translate3d(100%, 0, 0px) rotateY(35deg) 
-                     translate3d(100%, 0, -50px) rotateY(-35deg) scale(0.98);
+          transform-origin: center top;
+          transform: translate3d(0, 100%, 0px) rotateX(35deg) 
+                     translate3d(0, 100%, -50px) rotateX(-35deg) scale(0.98);
           z-index: 2;
           box-shadow: 0 8px 20px rgba(0,0,0,0.11);
         }
         
         .fold-panel-light-3 {
-          transform-origin: left center;
-          transform: translate3d(100%, 0, -100px) rotateY(35deg) 
-                     translate3d(100%, 0, -100px) rotateY(-35deg)
-                     translate3d(100%, 0, -150px) rotateY(-70deg) scale(0.96);
+          transform-origin: center top;
+          transform: translate3d(0, 100%, -100px) rotateX(35deg) 
+                     translate3d(0, 100%, -100px) rotateX(-35deg)
+                     translate3d(0, 100%, -150px) rotateX(-70deg) scale(0.96);
           z-index: 1;
           opacity: 0.85;
           box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         
-        /* Each panel shows different tiles based on offset */
-        .fold-panel-light-0 .fold-content-light { margin-left: 0; }
-        .fold-panel-light-1 .fold-content-light { margin-left: -45vw; }
-        .fold-panel-light-2 .fold-content-light { margin-left: -90vw; }
-        .fold-panel-light-3 .fold-content-light { margin-left: -135vw; }
+        /* Each panel shows different tiles based on vertical offset */
+        .fold-panel-light-0 .fold-content-light { margin-top: 0; }
+        .fold-panel-light-1 .fold-content-light { margin-top: -45vh; }
+        .fold-panel-light-2 .fold-content-light { margin-top: -90vh; }
+        .fold-panel-light-3 .fold-content-light { margin-top: -135vh; }
         
         /* Gallery Controls */
         .gallery-controls {

@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
-import { scrambleTo, isTouch } from './TextScramble'
+// TextScramble functions removed - file was missing
+const scrambleTo = (element: HTMLElement, text: string, options: any) => {
+  element.textContent = text // Simple fallback
+}
+const isTouch = () => 'ontouchstart' in window
 
 type Props = {
   title: string

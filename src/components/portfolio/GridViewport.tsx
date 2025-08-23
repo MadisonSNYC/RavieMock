@@ -5,7 +5,7 @@ import { useReducedMotionContext } from '../../providers/ReducedMotionProvider'
 import { useVirtualScroll } from '../../hooks/useVirtualScroll'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { SpotlightProvider } from './SpotlightContext'
-import CustomCursor from './CustomCursor'
+// CustomCursor component removed - was missing
 
 export interface GridViewportProps {
   projects: Project[]
@@ -135,7 +135,7 @@ export function GridViewport({ projects, speed = 0.6 }: GridViewportProps) {
           </SpotlightProvider>
         </div>
       </div>
-      {!prefersReducedMotion && <CustomCursor />}
+      {/* CustomCursor was removed - component was missing */}
     </section>
   )
 }

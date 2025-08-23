@@ -34,10 +34,12 @@ const securityHeaders = () => ({
         'Content-Security-Policy',
         "default-src 'self'; " +
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-        "style-src 'self' 'unsafe-inline'; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "img-src 'self' data: https: blob:; " +
-        "font-src 'self' data:; " +
+        "font-src 'self' data: https://fonts.gstatic.com; " +
         "connect-src 'self' ws: wss: http://localhost:* https://vitals.vercel-insights.com; " +
+        "worker-src 'self' blob:; " +
         "frame-src 'none'; " +
         "object-src 'none'; " +
         "base-uri 'self';"
@@ -82,10 +84,12 @@ const securityHeaders = () => ({
         'Content-Security-Policy',
         "default-src 'self'; " +
         "script-src 'self' 'nonce-" + nonce + "'; " +
-        "style-src 'self' 'unsafe-inline'; " + // Required for Tailwind and styled-components
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " + // Required for Tailwind and Google Fonts
+        "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "img-src 'self' data: https: blob:; " +
-        "font-src 'self' data:; " +
+        "font-src 'self' data: https://fonts.gstatic.com; " +
         "connect-src 'self' https://vitals.vercel-insights.com; " +
+        "worker-src 'self' blob:; " +
         "media-src 'self' blob:; " +
         "frame-src 'none'; " +
         "object-src 'none'; " +

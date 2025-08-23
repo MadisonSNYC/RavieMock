@@ -32,15 +32,22 @@ export function SmoothGrid({ projects }: SmoothGridProps) {
 
   return (
     <SpotlightProvider>
-      <div ref={containerRef} className="homepage-scroll-container">
+      <div 
+        ref={containerRef} 
+        className="homepage-scroll-container"
+        role="region"
+        aria-label="Portfolio projects showcase"
+      >
         
         {/* Single column project grid */}
-        <div className="homepage-grid-wrapper">
-          <div className="homepage-single-grid">
+        <section className="homepage-grid-wrapper" aria-label="Projects grid">
+          <div className="homepage-single-grid" role="list">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
                 className="homepage-project-card"
+                role="listitem"
+                aria-label={`Project: ${project.title}`}
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
@@ -54,14 +61,14 @@ export function SmoothGrid({ projects }: SmoothGridProps) {
               </motion.div>
             ))}
           </div>
-        </div>
+        </section>
         
         {/* Atmospheric smoke layers */}
-        <div className="homepage-atmosphere">
-          <div className="smoke-layer smoke-layer-1"></div>
-          <div className="smoke-layer smoke-layer-2"></div>
-          <div className="smoke-layer smoke-layer-3"></div>
-          <div className="smoke-layer smoke-layer-4"></div>
+        <div className="homepage-atmosphere" aria-hidden="true">
+          <div className="smoke-layer smoke-layer-1" role="presentation"></div>
+          <div className="smoke-layer smoke-layer-2" role="presentation"></div>
+          <div className="smoke-layer smoke-layer-3" role="presentation"></div>
+          <div className="smoke-layer smoke-layer-4" role="presentation"></div>
         </div>
       </div>
     </SpotlightProvider>

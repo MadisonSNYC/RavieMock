@@ -328,10 +328,45 @@ html.homepage-active {
    ACCESSIBILITY & UX
    =================================== */
 
+/* Skip Navigation Link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 1000;
+  border-radius: 0 0 4px 0;
+  font-weight: 600;
+  transition: top 0.3s ease;
+}
+
+.skip-to-main:focus {
+  top: 0;
+  outline: 2px solid #00D4FF;
+  outline-offset: 2px;
+}
+
+/* Enhanced Focus Indicators */
 .homepage-tile:focus-within,
-.homepage-tile-smooth:focus-within {
-  outline: 2px solid var(--accent-color, #007aff);
+.homepage-tile-smooth:focus-within,
+.homepage-project-card:focus-within {
+  outline: 3px solid #00D4FF;
   outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(0, 212, 255, 0.2);
+}
+
+/* Keyboard Navigation Enhancement */
+*:focus-visible {
+  outline: 2px solid #00D4FF !important;
+  outline-offset: 2px !important;
+}
+
+/* Remove outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .homepage-loader {
@@ -341,6 +376,41 @@ html.homepage-active {
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
+}
+
+/* ===================================
+   REDUCED MOTION SUPPORT
+   =================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
+  
+  /* Remove will-change to save resources */
+  .homepage-single-column::before,
+  .homepage-single-column::after,
+  .smoke-layer,
+  .homepage-tile-smooth .portfolio-card::before {
+    will-change: auto;
+  }
+  
+  /* Simplify hover states */
+  .homepage-tile-smooth .portfolio-card:hover {
+    transform: none;
+  }
+  
+  /* Maintain focus indicators */
+  *:focus-visible {
+    outline: 3px solid #00D4FF !important;
+    outline-offset: 2px !important;
+  }
 }
 
 /* ===================================

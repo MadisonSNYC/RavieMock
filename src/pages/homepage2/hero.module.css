@@ -1,0 +1,154 @@
+/* Hero Section Styles for HomePage v2 */
+
+/* ==================== Hero Section - Brutalist Typography ==================== */
+.hero-section {
+  padding: var(--spacing-xxl) var(--spacing-desktop);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+}
+
+.hero-container {
+  max-width: 100%;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  align-items: center;
+}
+
+/* Hero Content */
+.hero-content {
+  animation: fadeInUp var(--duration-slow) var(--ease-smooth);
+}
+
+.hero-headline {
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--spacing-m);
+}
+
+.gradient-text {
+  font-style: italic;
+  background: var(--gradient-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.hero-subheading {
+  font-size: 18px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-weight: 300;
+  max-width: 480px;
+  animation: fadeInUp var(--duration-slow) var(--ease-smooth) 200ms both;
+}
+
+/* Hero Video - Deep Purple Background */
+.hero-video {
+  animation: fadeInUp var(--duration-slow) var(--ease-smooth) 400ms both;
+}
+
+.video-placeholder {
+  aspect-ratio: 16/9;
+  background: var(--deep-purple);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.video-placeholder:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 60px rgba(107, 70, 255, 0.3);
+}
+
+.video-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-purple);
+  opacity: 0;
+  transition: opacity var(--duration-slow) ease;
+}
+
+.video-placeholder:hover::before {
+  opacity: 0.2;
+  animation: pulse 3s ease infinite;
+}
+
+.play-button {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-base) var(--ease-smooth);
+  z-index: 2;
+  position: relative;
+}
+
+.video-placeholder:hover .play-button {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.play-icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+  margin-left: 4px;
+}
+
+/* Responsive adjustments for hero */
+@media (max-width: 1024px) {
+  .hero-section {
+    padding: var(--spacing-xl) var(--spacing-tablet);
+  }
+  
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xxl);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: var(--spacing-l) var(--spacing-mobile);
+    min-height: auto;
+  }
+  
+  .hero-headline {
+    font-size: clamp(32px, 8vw, 48px);
+  }
+  
+  .hero-subheading {
+    font-size: 16px;
+  }
+  
+  .play-button {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .play-icon {
+    width: 24px;
+    height: 24px;
+  }
+}

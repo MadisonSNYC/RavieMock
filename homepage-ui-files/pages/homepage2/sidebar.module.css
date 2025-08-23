@@ -1,0 +1,203 @@
+/* Sidebar Styles for HomePage v2 */
+
+/* ==================== Project Directory Sidebar ==================== */
+.sidebar {
+  position: fixed;
+  left: -320px;
+  top: 0;
+  width: 320px;
+  height: 100vh;
+  background: var(--surface-dark);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  z-index: 999;
+  transition: left var(--duration-slow) var(--ease-smooth);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar.active {
+  left: 0;
+  box-shadow: 0 0 60px rgba(107, 70, 255, 0.1);
+}
+
+.sidebar-content {
+  padding: var(--spacing-xl);
+  padding-top: 100px;
+}
+
+/* Directory Header */
+.directory-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.directory-title {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-xs);
+  background: var(--gradient-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.date-stamp {
+  font-size: 12px;
+  color: var(--text-subtle);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* About Section */
+.about-section {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+  position: relative;
+}
+
+.about-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--text-subtle), transparent);
+  opacity: 0.3;
+}
+
+.about-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-s);
+}
+
+.about-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+/* Project Items */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.project-item {
+  padding: var(--spacing-s);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  transition: all var(--duration-base) var(--ease-smooth);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(107, 70, 255, 0.1), transparent);
+  transition: left var(--duration-slow) var(--ease-smooth);
+}
+
+.project-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+.project-item:hover::before {
+  left: 100%;
+}
+
+.project-number {
+  font-size: 11px;
+  color: var(--text-subtle);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+
+.project-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.project-category {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ==================== Toggle Button - Floating Arrow ==================== */
+.toggle-btn {
+  position: fixed;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background: var(--surface-dark);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all var(--duration-base) var(--ease-smooth);
+  animation: pulse-subtle 3s infinite;
+}
+
+.toggle-btn:hover {
+  background: rgba(107, 70, 255, 0.1);
+  border-color: rgba(107, 70, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.toggle-btn.active {
+  left: 336px;
+  background: rgba(107, 70, 255, 0.15);
+  border-color: rgba(107, 70, 255, 0.4);
+}
+
+.arrow-icon {
+  transition: transform var(--duration-base) var(--ease-smooth);
+  color: var(--text-secondary);
+}
+
+.toggle-btn.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+/* Responsive adjustments for sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 280px;
+    left: -280px;
+  }
+  
+  .toggle-btn.active {
+    left: 296px;
+  }
+  
+  .sidebar-content {
+    padding: var(--spacing-m);
+    padding-top: 80px;
+  }
+}

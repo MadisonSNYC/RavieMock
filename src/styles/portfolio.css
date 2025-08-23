@@ -1,0 +1,82 @@
+/* Portfolio-specific utilities */
+@layer utilities {
+  .gpu {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+  
+  .aspect-portfolio {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+:root { --tile-scale: 0.5; }           /* default */
+.cinematic-tiles { --tile-scale: 0.48; } /* enable on portfolio route */
+
+.portfolio-viewport {
+  position: sticky;
+  top: var(--nav-height, 0px);
+  height: calc(100vh - var(--nav-height, 0px));
+  overflow: hidden;
+}
+
+/* Rectangular tile: exact fraction of the sticky viewport */
+.portfolio-tile {
+  height: calc((100vh - var(--nav-height, 0px)) * var(--tile-scale, 0.5));
+}
+
+/* Hard clamp: all portfolio media are rectangles (no rounding) */
+.portfolio-card,
+.portfolio-card .spotlight-content,
+.portfolio-card video,
+.portfolio-card img,
+.portfolio-card canvas { 
+  border-radius: 0 !important; 
+}
+
+/* Hide (overlay) scrollbars but keep native scroll */
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { width: 0; height: 0; }
+
+/* Virtual scroller container under the fixed header */
+.portfolio-scroll {
+  height: calc(100vh - var(--nav-height, 0px));
+  overflow: hidden;            /* important: NO native scroll UI */
+  overflow-x: clip;            /* kill horizontal bleed from gaps/w-screen */
+  touch-action: none;          /* we handle pointer-drag in virtual driver */
+}
+
+/* Route-scoped: when .no-scrollbars is on <html>/<body>, hide all scrollbars. */
+html.no-scrollbars,
+body.no-scrollbars {
+  overflow: hidden;              /* prevent page scrollbar */
+  overscroll-behavior: none;     /* stop scroll chaining */
+}
+
+/* Hide scrollbars for any descendant scrollers while this class is active */
+html.no-scrollbars * {
+  -ms-overflow-style: none;      /* IE/Edge legacy */
+  scrollbar-width: none;         /* Firefox */
+}
+html.no-scrollbars *::-webkit-scrollbar {
+  width: 0; height: 0; background: transparent; /* WebKit */
+}
+
+/* Non-active cards: BRIGHTER grayscale for clearer contrast (no size change) */
+article[data-muted="true"] .spotlight-content {
+  filter: grayscale(1) brightness(0.75) contrast(1.05);
+  transition: filter 120ms ease;
+  will-change: filter;
+}
+
+/* Hover lift on active card (subtle, optional) */
+article:not([data-muted="true"]) .spotlight-content {
+  transform: translateZ(0); /* promote */
+}
+
+/* Reduced motion: snap changes (no animated filters) */
+@media (prefers-reduced-motion: reduce) {
+  article[data-muted="true"] .spotlight-content {
+    transition: none;
+  }
+}

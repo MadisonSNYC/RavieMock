@@ -1,0 +1,16 @@
+{
+  "name": "Ravie.co",
+  "short_name": "Ravie",
+  "description": "Premium Motion Design & Creative Agency",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "theme_color": "#00D4FF",
+  "background_color": "#0A0A0B",
+  "display": "standalone",
+  "start_url": "/"
+}

@@ -1,0 +1,111 @@
+/* Header Styles for HomePage v2 */
+
+/* ==================== Header - Brutalist Minimal ==================== */
+.header {
+  padding: var(--spacing-m) 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, 
+    rgba(0, 0, 0, 0.95) 0%, 
+    rgba(0, 0, 0, 0.8) 50%, 
+    transparent 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-desktop);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.logo-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: var(--gradient-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.logo:hover {
+  letter-spacing: 0.02em;
+  filter: brightness(1.2);
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  position: relative;
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gradient-electric);
+  transition: width var(--duration-base) var(--ease-smooth);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Responsive adjustments for header */
+@media (max-width: 1024px) {
+  .header-container {
+    padding: 0 var(--spacing-tablet);
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 var(--spacing-mobile);
+  }
+  
+  .logo {
+    font-size: 24px;
+  }
+  
+  .nav {
+    gap: var(--spacing-m);
+  }
+  
+  .nav-link {
+    font-size: 12px;
+  }
+}

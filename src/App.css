@@ -1,0 +1,22 @@
+/**
+ * Main App Styles - Modularized
+ * Imports all modular CSS files
+ */
+
+/* Font imports must come first */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Core imports */
+@import "tailwindcss";
+@import "./styles/variables.css";
+
+/* Modular style imports */
+@import "./styles/modules/typography.css";
+@import "./styles/modules/theme.css";
+@import "./styles/modules/base.css";
+@import "./styles/modules/utilities.css";
+@import "./styles/modules/components.css";
+@import "./styles/modules/animations.css";
+
+/* Custom variant for dark mode */
+@custom-variant dark (&:is(.dark *));

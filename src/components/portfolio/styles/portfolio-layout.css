@@ -1,0 +1,96 @@
+/* Portfolio Layout Styles */
+
+.portfolio-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  position: relative;
+}
+
+.portfolio-container {
+  display: flex;
+  height: 100vh;
+  position: relative;
+  width: 100%;
+}
+
+/* Sidebar styles */
+.project-sidebar {
+  width: 250px;
+  background: #111;
+  border-right: 1px solid #222;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  padding: 2rem;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+/* Project header */
+.project-header {
+  padding: 2rem;
+  border-bottom: 1px solid #222;
+  background: #111;
+  margin-bottom: 2rem;
+}
+
+.project-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+/* Gallery viewport */
+.gallery-viewport-light {
+  width: 100%;
+  min-height: 500px;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Project info section */
+.project-info {
+  padding: 2rem;
+  background: #111;
+  border: 1px solid #222;
+}
+
+.portfolio-infinite-active {
+  overflow: hidden;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.view-toggle button {
+  padding: 0.5rem 1rem;
+  background: #222;
+  color: #fff;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.view-toggle button:hover {
+  background: #333;
+}
+
+.view-toggle button.active {
+  background: #00D4FF;
+  color: #000;
+}

@@ -1,0 +1,74 @@
+/* Development Routes Styles */
+
+.dev-container {
+  width: 100%;
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  padding: 2rem;
+}
+
+.dev-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.dev-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dev-header p {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.dev-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Codrops specific styles */
+.codrops-demo {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.codrops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* 3D Fold specific */
+.fold-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+/* Debug info */
+.dev-debug {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.8);
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  z-index: 9999;
+}
+
+.dev-debug pre {
+  margin: 0;
+  color: #00ff00;
+}

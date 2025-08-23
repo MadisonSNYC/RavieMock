@@ -1,0 +1,84 @@
+/* Tile Styles */
+
+.tile-image {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.tile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tile-image:hover img {
+  transform: scale(1.05);
+}
+
+.tile-video {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.tile-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tile-text {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+}
+
+.tile-text h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.tile-text p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* Tile animations */
+@keyframes tileEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tile-wrapper {
+  animation: tileEnter 0.5s ease-out;
+}
+
+/* Responsive tiles */
+@media (max-width: 768px) {
+  .tile-text h3 {
+    font-size: 1.5rem;
+  }
+  
+  .tile-text p {
+    font-size: 1rem;
+  }
+}

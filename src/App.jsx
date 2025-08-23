@@ -23,6 +23,10 @@ const Working3DFold = lazy(() => import('./routes/dev/Working3DFold'))
 const Reversed3DFoldTemplateFixed = lazy(() => import('./routes/dev/Reversed3DFoldTemplateFixed'))
 const Reversed3DFoldStatic = lazy(() => import('./routes/dev/Reversed3DFoldStatic'))
 const PortfolioInfiniteScroll = lazy(() => import('./routes/dev/PortfolioInfiniteScroll'))
+const PortfolioInfiniteScrollFixed = lazy(() => import('./routes/dev/PortfolioInfiniteScrollFixed'))
+const PortfolioMinimal = lazy(() => import('./routes/dev/PortfolioMinimal'))
+const PortfolioInfiniteScrollDebug = lazy(() => import('./routes/dev/PortfolioInfiniteScrollDebug'))
+const TestPortfolio = lazy(() => import('./routes/dev/test-portfolio'))
 const Backup3DLight = lazy(() => import('./routes/dev/backup-3d-light'))
 
 // Loading component
@@ -71,6 +75,10 @@ function App() {
               <Route path="/dev/reversed-fixed" element={<Reversed3DFoldTemplateFixed />} />
               <Route path="/dev/reversed-static" element={<Reversed3DFoldStatic />} />
               <Route path="/dev/portfolio-infinite" element={<PortfolioInfiniteScroll />} />
+              <Route path="/dev/portfolio-minimal" element={<PortfolioMinimal />} />
+              <Route path="/dev/portfolio-infinite-fixed" element={<PortfolioInfiniteScrollFixed />} />
+              <Route path="/dev/portfolio-infinite-debug" element={<PortfolioInfiniteScrollDebug />} />
+              <Route path="/dev/test-portfolio" element={<TestPortfolio />} />
               <Route path="/dev/backup-3d-light" element={<Backup3DLight />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

@@ -1,0 +1,124 @@
+/* 3D Gallery Styles */
+
+.gallery-3d-container {
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-viewport-light {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#fold-wrapper-light {
+  position: relative;
+  width: 45vw;
+  height: 45vh;
+  transform-style: preserve-3d;
+  transform: rotateX(-10deg);
+}
+
+.fold-panel-light {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.fold-content-light {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: max-content;
+  will-change: transform;
+  transition: transform 0.12s ease-out;
+}
+
+.tile-wrapper {
+  width: 100%;
+  height: 45vh;
+  flex-shrink: 0;
+  display: flex;
+  position: relative;
+}
+
+/* Z-axis layering for vertical slot machine effect */
+.fold-panel-light-0 {
+  transform: translate3d(0, 0, 100px) scale(1.02);
+  z-index: 4;
+}
+
+.fold-panel-light-1 {
+  transform-origin: center top;
+  transform: translate3d(0, 100%, 50px) rotateX(35deg);
+  z-index: 3;
+}
+
+.fold-panel-light-2 {
+  transform-origin: center top;
+  transform: translate3d(0, 100%, 0px) rotateX(35deg) 
+             translate3d(0, 100%, -50px) rotateX(-35deg);
+  z-index: 2;
+}
+
+.fold-panel-light-3 {
+  transform-origin: center top;
+  transform: translate3d(0, 100%, -100px) rotateX(35deg) 
+             translate3d(0, 100%, -100px) rotateX(-35deg)
+             translate3d(0, 100%, -150px) rotateX(-70deg);
+  z-index: 1;
+  opacity: 0.85;
+}
+
+/* Panel offsets */
+.fold-panel-light-0 .fold-content-light { margin-top: 0; }
+.fold-panel-light-1 .fold-content-light { margin-top: -45vh; }
+.fold-panel-light-2 .fold-content-light { margin-top: -90vh; }
+.fold-panel-light-3 .fold-content-light { margin-top: -135vh; }
+
+/* Gallery Controls */
+.gallery-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255,255,255,0.95);
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.control-btn {
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.control-btn:hover {
+  background: #333;
+}
+
+.control-info {
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 0.05em;
+}

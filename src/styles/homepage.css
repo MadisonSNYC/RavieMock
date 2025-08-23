@@ -34,7 +34,7 @@ html.homepage-active {
    ATMOSPHERIC BACKGROUND EFFECTS
    =================================== */
 
-/* Primary atmospheric layer */
+/* Primary atmospheric layer (Optimized) */
 .homepage-single-column::before {
   content: '';
   position: fixed;
@@ -44,25 +44,19 @@ html.homepage-active {
   bottom: 0;
   will-change: transform, opacity;
   transform: translateZ(0); /* Force GPU acceleration */
+  /* Reduced to 4 gradients for performance */
   background: 
-    /* White smoke layers */
-    radial-gradient(ellipse 200% 100% at 20% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 40%, transparent 70%),
-    radial-gradient(ellipse 150% 80% at 80% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.06) 35%, transparent 60%),
-    radial-gradient(ellipse 180% 120% at 50% 70%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.05) 45%, transparent 75%),
-    radial-gradient(ellipse 120% 90% at 10% 80%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.07) 30%, transparent 65%),
-    radial-gradient(ellipse 160% 110% at 90% 60%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 50%, transparent 80%),
-    /* Colored tints */
-    radial-gradient(ellipse 300% 200% at 30% 40%, rgba(100, 150, 255, 0.08) 0%, rgba(100, 150, 255, 0.02) 30%, transparent 60%),
-    radial-gradient(ellipse 250% 150% at 70% 60%, rgba(150, 100, 255, 0.06) 0%, rgba(150, 100, 255, 0.015) 35%, transparent 70%),
-    /* Base gradient */
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.6) 100%);
+    radial-gradient(ellipse 200% 100% at 20% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 150% 80% at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 300% 200% at 30% 40%, rgba(100, 150, 255, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);
   pointer-events: none;
   z-index: -2;
   opacity: 0.8;
   animation: atmosphereFlow 25s ease-in-out infinite;
 }
 
-/* Secondary floating smoke layer */
+/* Secondary floating smoke layer (Optimized) */
 .homepage-single-column::after {
   content: '';
   position: fixed;
@@ -72,11 +66,10 @@ html.homepage-active {
   bottom: 0;
   will-change: transform, opacity;
   transform: translateZ(0); /* Force GPU acceleration */
+  /* Reduced to 2 gradients for performance */
   background: 
-    radial-gradient(ellipse 100% 60% at 15% 15%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 25%, transparent 50%),
-    radial-gradient(ellipse 80% 100% at 85% 25%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 30%, transparent 55%),
-    radial-gradient(ellipse 90% 70% at 25% 85%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 60%),
-    radial-gradient(ellipse 110% 80% at 75% 90%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 25%, transparent 45%);
+    radial-gradient(ellipse 100% 60% at 15% 15%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 70% at 75% 85%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
   pointer-events: none;
   z-index: -1;
   opacity: 0.6;
@@ -255,23 +248,24 @@ html.homepage-active {
 }
 
 /* ===================================
-   CARD SMOKE EFFECTS
+   CARD SMOKE EFFECTS (Optimized)
    =================================== */
 
 .homepage-tile-smooth .portfolio-card::before {
   content: '';
   position: absolute;
   inset: -30px;
+  /* Simplified to 3 gradients for better performance */
   background: 
-    radial-gradient(ellipse 120% 80% at 30% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%),
-    radial-gradient(ellipse 100% 60% at 70% 80%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.06) 35%, transparent 65%),
-    radial-gradient(ellipse 80% 120% at 50% 50%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%),
-    radial-gradient(ellipse 140% 90% at 20% 60%, rgba(100, 150, 255, 0.08) 0%, rgba(100, 150, 255, 0.02) 25%, transparent 50%),
-    radial-gradient(ellipse 110% 70% at 80% 40%, rgba(150, 100, 255, 0.06) 0%, rgba(150, 100, 255, 0.015) 30%, transparent 55%);
+    radial-gradient(ellipse 120% 80% at 30% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 60% at 70% 80%, rgba(100, 150, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 120% at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 75%);
   border-radius: var(--homepage-border-radius-large);
   opacity: 0.9;
   z-index: -5;
   animation: smokeShift 15s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* GPU acceleration */
 }
 
 /* ===================================

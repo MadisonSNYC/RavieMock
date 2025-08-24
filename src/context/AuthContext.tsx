@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 import {
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   User,
   signInWithEmailAndPassword,
@@ -66,7 +67,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async signInWithGoogle() {
       const auth = await getFirebaseAuth();
       const provider = getGoogleProvider();
-      await signInWithPopup(auth, provider);
+      const useRedirect = import.meta.env.VITE_AUTH_GOOGLE_FLOW === 'redirect';
+      if (useRedirect) {
+        await signInWithRedirect(auth, provider);
+      } else {
+        await signInWithPopup(auth, provider);
+      }
     },
     async signOutUser() {
       const auth = await getFirebaseAuth();

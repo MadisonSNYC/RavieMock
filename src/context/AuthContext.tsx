@@ -1,6 +1,14 @@
 // src/context/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  User,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
 import { getFirebaseAuth } from '../lib/firebase';
 import { getGoogleProvider } from '../lib/googleProvider';
 import type { AuthUser } from '../types/auth';
@@ -10,6 +18,9 @@ type AuthState = {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOutUser: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  registerWithEmail: (email: string, password: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -60,6 +71,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async signOutUser() {
       const auth = await getFirebaseAuth();
       await signOut(auth);
+    },
+    async signInWithEmail(email: string, password: string) {
+      if (!email || !password) throw new Error('Email and password are required');
+      const auth = await getFirebaseAuth();
+      await signInWithEmailAndPassword(auth, email, password);
+    },
+    async registerWithEmail(email: string, password: string) {
+      if (!email || !password) throw new Error('Email and password are required');
+      const auth = await getFirebaseAuth();
+      await createUserWithEmailAndPassword(auth, email, password);
+    },
+    async resetPassword(email: string) {
+      if (!email) throw new Error('Email is required');
+      const auth = await getFirebaseAuth();
+      await sendPasswordResetEmail(auth, email);
     }
   }), []);
 

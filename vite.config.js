@@ -52,6 +52,9 @@ const securityHeaders = () => ({
         ].join('; ')
       )
       
+      // COOP header to allow popups for Google Auth
+      res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
+      
       next()
     })
   },
@@ -81,7 +84,7 @@ const securityHeaders = () => ({
       res.setHeader('X-DNS-Prefetch-Control', 'off')
       res.setHeader('Expect-CT', 'max-age=86400, enforce')
       res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
-      res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
+      res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
       res.setHeader('Cross-Origin-Resource-Policy', 'same-origin')
       
       // Enhanced CSP for production with hash support for inline styles
@@ -113,6 +116,9 @@ const securityHeaders = () => ({
           "upgrade-insecure-requests"
         ].join('; ')
       )
+      
+      // COOP header to allow popups for Google Auth
+      res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
       
       next()
     })

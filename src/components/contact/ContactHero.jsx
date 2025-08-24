@@ -39,7 +39,7 @@ export default function ContactHero() {
           className="mb-6"
         >
           <img 
-            src="/src/assets/Ravielogo1.png" 
+            src="/Assts/Ravie Logos/Group 3.png" 
             alt="Ravie Logo" 
             className="h-8 mx-auto object-contain"
           />

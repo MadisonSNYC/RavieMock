@@ -30,7 +30,9 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
         panels.forEach((panel) => {
           const content = panel.querySelector('.fold-content-light') as HTMLElement
           if (content) {
-            content.style.transform = `translateY(${-position}px)`
+            // Use modulo for infinite scroll wrapping
+            const wrappedPosition = position % (totalTiles * scrollPerTile)
+            content.style.transform = `translateY(${-wrappedPosition}px)`
           }
         })
         
@@ -125,7 +127,7 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
         
         .tile-wrapper {
           width: 100%;
-          height: 45vh;
+          height: 600px; /* Match scrollPerTile value */
           flex-shrink: 0;
           display: flex;
         }
@@ -164,9 +166,9 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
         
         /* Each panel shows different tiles based on vertical offset */
         .fold-panel-light-0 .fold-content-light { margin-top: 0; }
-        .fold-panel-light-1 .fold-content-light { margin-top: -45vh; }
-        .fold-panel-light-2 .fold-content-light { margin-top: -90vh; }
-        .fold-panel-light-3 .fold-content-light { margin-top: -135vh; }
+        .fold-panel-light-1 .fold-content-light { margin-top: -600px; }
+        .fold-panel-light-2 .fold-content-light { margin-top: -1200px; }
+        .fold-panel-light-3 .fold-content-light { margin-top: -1800px; }
         
         /* Gallery Controls */
         .gallery-controls {
@@ -211,8 +213,8 @@ export default function ThreeDFoldGalleryLight({ project }: { project: ProjectDa
           {[0, 1, 2, 3].map(panelIndex => (
             <div key={panelIndex} className={`fold-panel-light fold-panel-light-${panelIndex}`}>
               <div className="fold-content-light">
-                {/* Repeat tiles for infinite scroll */}
-                {[...Array(20)].flatMap((_, repeatIndex) => 
+                {/* Create enough tiles for smooth infinite scroll */}
+                {[...Array(Math.ceil(20 / project.tiles.length))].flatMap((_, repeatIndex) => 
                   project.tiles.map((tile, tileIndex) => (
                     <div key={`${repeatIndex}-${tileIndex}`} className="tile-wrapper">
                       {TileTemplates[tile.type as keyof typeof TileTemplates]({ data: tile.data })}

@@ -42,9 +42,9 @@ export default function ProjectPageContent({ project }) {
 
   // Team members who worked on this project
   const teamMembers = useMemo(() => [
-    { id: 1, name: "Austin Bauwens", role: "Creative Director", image: "/ravie-icon.png" },
-    { id: 2, name: "Noah Wilde", role: "Lead Developer", image: "/ravie-icon.png" },
-    { id: 3, name: "Madison", role: "Motion Designer", image: "/ravie-icon.png" }
+    { id: 1, name: "Austin Bauwens", role: "Creative Director", image: "/Assts/Ravie Logos/Vector.png" },
+    { id: 2, name: "Noah Wilde", role: "Lead Developer", image: "/Assts/Ravie Logos/Vector.png" },
+    { id: 3, name: "Madison", role: "Motion Designer", image: "/Assts/Ravie Logos/Vector.png" }
   ], [])
 
   // Memoize section navigation configuration

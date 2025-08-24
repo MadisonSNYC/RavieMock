@@ -48,8 +48,8 @@ export const THUMBNAILS = {
 
 // Logo paths
 export const LOGOS = {
-  ravieAsset: '/assets/Ravielogo1.png',
-  raviePublic: '/Ravie/Ravielogo1.png'
+  ravieAsset: '/Assts/Ravie Logos/Group 3.png',
+  raviePublic: '/Assts/Ravie Logos/Group 3.png'
 }
 
 // Mosaic tiles configuration (5x3 grid - perfect checkerboard)

@@ -22,7 +22,7 @@ export default function MeetTheTeam() {
       bio: "Technology innovator pushing the boundaries of digital experiences. Noah specializes in bridging the gap between creative vision and technical execution, bringing 10+ years of experience in creative technology.",
       personalNote: "Passionate about generative art and the intersection of code and creativity. When not coding, you'll find me exploring new dimensions in digital art.",
       philosophy: "Innovation happens when art meets technology.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       silhouette: "/silhouette-noah.svg",
       realPhoto: "/team/noah.jpg",
       linkedin: "https://linkedin.com/in/noahwilde",
@@ -46,7 +46,7 @@ export default function MeetTheTeam() {
       bio: "Visionary leader with 10+ years driving operational excellence and strategic growth. Austin believes in the power of design to transform businesses and create lasting impact across industries.",
       personalNote: "When not crafting strategies, you'll find me exploring new coffee roasters or hiking mountain trails with my camera.",
       philosophy: "Great design is invisible until it needs to be seen.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       silhouette: "/silhouette-austin.svg",
       realPhoto: "/team/austin.jpg",
       linkedin: "https://linkedin.com/in/austinbauwens",
@@ -69,7 +69,7 @@ export default function MeetTheTeam() {
       name: "Sam Essanoussi", 
       role: "Creative Director",
       bio: "Brand storyteller crafting compelling narratives that resonate.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "OSOS Campaign", slug: "osos" }, 
         { name: "Coinbase: OnChain Vision", slug: "coinbase" }
@@ -80,7 +80,7 @@ export default function MeetTheTeam() {
       name: "Will Taylor", 
       role: "Creative Director",
       bio: "Product design expert creating intuitive and beautiful user experiences.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "Keller Williams Conference", slug: "keller-williams" }
       ]
@@ -90,7 +90,7 @@ export default function MeetTheTeam() {
       name: "Jackson Redford", 
       role: "Executive Producer",
       bio: "Production leader ensuring every project exceeds expectations.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "Ravie Loops", slug: "loops" }
       ]
@@ -100,7 +100,7 @@ export default function MeetTheTeam() {
       name: "Tom Anderson", 
       role: "Motion Designer",
       bio: "Motion artist bringing stories to life through animation.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "Jhené Aiko", slug: "jhene-aiko" }
       ]
@@ -110,7 +110,7 @@ export default function MeetTheTeam() {
       name: "Andre Martinez", 
       role: "3D Artist",
       bio: "3D specialist creating immersive digital experiences.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "Ozone.pro Brand Film", slug: "ozone" }
       ]
@@ -120,7 +120,7 @@ export default function MeetTheTeam() {
       name: "Connor Blake", 
       role: "Developer",
       bio: "Full-stack developer building robust digital solutions.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "Keller Williams Conference", slug: "keller-williams" }
       ]
@@ -130,7 +130,7 @@ export default function MeetTheTeam() {
       name: "Olivia Chen", 
       role: "Brand Strategist",
       bio: "Strategic thinker shaping brand narratives and market positioning.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "OSOS Campaign", slug: "osos" }
       ]
@@ -140,7 +140,7 @@ export default function MeetTheTeam() {
       name: "Anne Wilson", 
       role: "Project Manager",
       bio: "Operations expert keeping projects on track and clients happy.",
-      image: "/ravie-icon.png",
+      image: "/Assts/Ravie Logos/Vector.png",
       projects: [
         { name: "Coinbase: OnChain Vision", slug: "coinbase" }
       ]

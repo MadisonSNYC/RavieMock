@@ -46,7 +46,7 @@ export default function TeamMemberTemplate({ member, variant = 'card', onClick, 
             {/* Profile Image */}
             <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <img 
-                src={member.image || '/ravie-icon.png'}
+                src={member.image || '/Assts/Ravie Logos/Vector.png'}
                 alt=""
                 className="w-full h-full object-cover opacity-40 filter contrast-150 brightness-0 invert"
                 style={{ mixBlendMode: 'screen' }}
@@ -100,7 +100,7 @@ export default function TeamMemberTemplate({ member, variant = 'card', onClick, 
             {/* Profile Image */}
             <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <img 
-                src={member.image || '/ravie-icon.png'}
+                src={member.image || '/Assts/Ravie Logos/Vector.png'}
                 alt=""
                 className="w-full h-full object-cover opacity-40 filter contrast-150 brightness-0 invert"
                 style={{ mixBlendMode: 'screen' }}
@@ -155,7 +155,7 @@ export default function TeamMemberTemplate({ member, variant = 'card', onClick, 
               {/* Enhanced Profile Image */}
               <div className="relative w-48 h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0">
                 <img 
-                  src={member.image || '/ravie-icon.png'}
+                  src={member.image || '/Assts/Ravie Logos/Vector.png'}
                   alt=""
                   className="w-full h-full object-cover opacity-60 filter contrast-150 brightness-0 invert"
                   style={{ mixBlendMode: 'screen' }}

@@ -48,6 +48,7 @@ export const projects = [
     thumbnail: 'Loopsthumb.webp',
     image: '/Thumbs/Loopsthumb.webp',
     video: true,
+    videoUrl: '/Assts/Projects/Loops/Borderline_v01.mp4',
     size: 'wide', // Takes up 2x1 space
     tier: 1,
     featured: true
@@ -64,7 +65,7 @@ export const projects = [
     metrics: '27k+ Attendees',
     url: 'https://ravie.co/the-work/kw',
     thumbnail: 'kwthmb.webp',
-    image: '/Thumbs/kwthmb.webp',
+    image: '/Assts/Projects/KW/KW_ProjectReelThmb_v01.jpg',
     video: true,
     videoUrl: '/Kellerw/KWTrim.mp4',
     size: 'tall', // Takes up 1x2 space

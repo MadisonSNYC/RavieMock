@@ -249,7 +249,12 @@ export default function HeaderFrosted() {
           {/* Center Branding */}
           <div className="brand-center">
             <Link to="/" className="brand-link" aria-label="Ravie - Home">
-              <span className="brand-text">ravie.co</span>
+              <img 
+                src="/Assts/Ravie Logos/Vector.png" 
+                alt="Ravie" 
+                className="h-8 object-contain"
+                style={{ filter: 'brightness(1.2)' }}
+              />
             </Link>
           </div>
 

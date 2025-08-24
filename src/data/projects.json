@@ -5,8 +5,8 @@
     "client": "Keller Williams",
     "categories": ["Event", "Motion", "Corporate"],
     "slug": "keller-williams-opener",
-    "posterSrc": "/Thumbs/kwthmb.webp",
-    "previewSrc": "/Kellerw/KWTrim.mp4",
+    "posterSrc": "/Assts/Projects/KW/KW_ProjectReelThmb_v01.jpg",
+    "previewSrc": "/Assts/Projects/Loops/Borderline_v01.mp4",
     "durationSec": 15,
     "description": "Dynamic event opener crafted for Keller Williams' Mega Agent Camp, featuring bold motion graphics and inspiring visuals to energize top performers."
   },
@@ -82,7 +82,7 @@
     "categories": ["Motion", "Animation", "Creative"],
     "slug": "loops-studio",
     "posterSrc": "/Thumbs/Loopsthumb.webp",
-    "previewSrc": "/Ravie/ravie_reel_2024_-_h (1080p).mp4",
+    "previewSrc": "/Assts/Projects/Loops/Borderline_v01.mp4",
     "durationSec": 10
   },
   {

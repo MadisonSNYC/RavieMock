@@ -202,7 +202,7 @@ export default function HeroSectionV2() {
                   muted={isMuted}
                   loop
                 >
-                  <source src="/Ravie/ravie_reel_2024_-_h (1080p).mp4" type="video/mp4" />
+                  <source src="/Assts/Projects/Loops/Borderline_v01.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
                 
@@ -290,7 +290,7 @@ export default function HeroSectionV2() {
                     muted={isMuted}
                     loop
                   >
-                    <source src="/Ravie/ravie_reel_2024_-_h (1080p).mp4" type="video/mp4" />
+                    <source src="/Assts/Projects/Loops/Borderline_v01.mp4" type="video/mp4" />
                   </video>
                 </div>
                 

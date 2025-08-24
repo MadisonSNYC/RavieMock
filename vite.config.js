@@ -32,17 +32,24 @@ const securityHeaders = () => ({
       // Basic CSP for development (more permissive for HMR)
       res.setHeader(
         'Content-Security-Policy',
-        "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "img-src 'self' data: https: blob:; " +
-        "font-src 'self' data: https://fonts.gstatic.com; " +
-        "connect-src 'self' ws: wss: http://localhost:* https://vitals.vercel-insights.com; " +
-        "worker-src 'self' blob:; " +
-        "frame-src 'none'; " +
-        "object-src 'none'; " +
-        "base-uri 'self';"
+        [
+          "default-src 'self'",
+          // allow Google auth scripts
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.gstatic.com",
+          // firebase/identity endpoints used by Auth
+          "connect-src 'self' ws: wss: http://localhost:* https://vitals.vercel-insights.com https://apis.google.com https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com https://*.firebaseio.com",
+          // avatars & inline images if needed
+          "img-src 'self' data: blob: https: https://*.googleusercontent.com",
+          // dev styles often need 'unsafe-inline'
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "font-src 'self' data: https://fonts.gstatic.com",
+          "worker-src 'self' blob:",
+          // google auth iframes/popups
+          "frame-src 'self' https://accounts.google.com https://*.google.com https://*.firebaseapp.com",
+          "object-src 'none'",
+          "base-uri 'self'"
+        ].join('; ')
       )
       
       next()
@@ -82,22 +89,29 @@ const securityHeaders = () => ({
       // In a fully production environment, you'd want to extract all inline styles
       res.setHeader(
         'Content-Security-Policy',
-        "default-src 'self'; " +
-        "script-src 'self' 'nonce-" + nonce + "'; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " + // Required for Tailwind and Google Fonts
-        "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "img-src 'self' data: https: blob:; " +
-        "font-src 'self' data: https://fonts.gstatic.com; " +
-        "connect-src 'self' https://vitals.vercel-insights.com; " +
-        "worker-src 'self' blob:; " +
-        "media-src 'self' blob:; " +
-        "frame-src 'none'; " +
-        "object-src 'none'; " +
-        "base-uri 'self'; " +
-        "form-action 'self'; " +
-        "frame-ancestors 'none'; " +
-        "block-all-mixed-content; " +
-        "upgrade-insecure-requests;"
+        [
+          "default-src 'self'",
+          // allow Google auth scripts with nonce for production
+          "script-src 'self' 'nonce-" + nonce + "' https://apis.google.com https://www.gstatic.com",
+          // firebase/identity endpoints used by Auth
+          "connect-src 'self' https://vitals.vercel-insights.com https://apis.google.com https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com https://*.firebaseio.com",
+          // avatars & inline images
+          "img-src 'self' data: https: blob: https://*.googleusercontent.com",
+          // styles with fonts
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "font-src 'self' data: https://fonts.gstatic.com",
+          "worker-src 'self' blob:",
+          "media-src 'self' blob:",
+          // google auth iframes/popups
+          "frame-src 'self' https://accounts.google.com https://*.google.com https://*.firebaseapp.com",
+          "object-src 'none'",
+          "base-uri 'self'",
+          "form-action 'self'",
+          "frame-ancestors 'none'",
+          "block-all-mixed-content",
+          "upgrade-insecure-requests"
+        ].join('; ')
       )
       
       next()

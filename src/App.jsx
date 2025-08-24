@@ -28,6 +28,7 @@ const PortfolioMinimal = lazy(() => import('./routes/dev/PortfolioMinimal'))
 const PortfolioInfiniteScrollDebug = lazy(() => import('./routes/dev/PortfolioInfiniteScrollDebug'))
 const TestPortfolio = lazy(() => import('./routes/dev/test-portfolio'))
 const Backup3DLight = lazy(() => import('./routes/dev/backup-3d-light'))
+const AuthPlayground = lazy(() => import('./routes/dev/AuthPlayground'))
 
 // Loading component
 const PageLoader = () => (
@@ -80,6 +81,7 @@ function App() {
               <Route path="/dev/portfolio-infinite-debug" element={<PortfolioInfiniteScrollDebug />} />
               <Route path="/dev/test-portfolio" element={<TestPortfolio />} />
               <Route path="/dev/backup-3d-light" element={<Backup3DLight />} />
+              <Route path="/dev/auth" element={<AuthPlayground />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

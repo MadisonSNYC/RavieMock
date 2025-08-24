@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signInWithRedirect,
+  getRedirectResult,
   signOut,
   User,
   signInWithEmailAndPassword,
@@ -61,6 +62,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isActive = false;
       if (unsubRef.current) unsubRef.current();
     };
+  }, []);
+
+  // Consume Google redirect result once after mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const auth = await getFirebaseAuth();
+        // If we arrived via redirect, this resolves with user credential once.
+        const cred = await getRedirectResult(auth);
+        // No-op needed on success; onAuthStateChanged will set user.
+        // We keep this to catch and surface redirect-specific errors.
+        if (!cancelled && cred) {
+          // optional: you could set a success message here if desired
+        }
+      } catch (e) {
+        // optional: console.debug('[auth] redirect result error', e);
+        // We intentionally don't throw; the playground will show errors on action.
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const actions = useMemo(() => ({

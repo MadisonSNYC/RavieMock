@@ -54,8 +54,10 @@ export default function AuthPlayground() {
 
       <section style={{ padding: 16, border: '1px solid #222', borderRadius: 8 }}>
         <div style={{ display: 'grid', gap: 8, marginBottom: 8 }}>
-          <input placeholder="email" value={email} onChange={e => setEmail(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #333' }} />
-          <input placeholder="password" type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #333' }} />
+          <label htmlFor="auth-email" style={{display:'block',fontSize:12,opacity:.7}}>email</label>
+          <input id="auth-email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #333' }} />
+          <label htmlFor="auth-pass" style={{display:'block',fontSize:12,opacity:.7}}>password</label>
+          <input id="auth-pass" type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #333' }} />
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button onClick={() => run(() => signInWithEmail(email, password))} style={{ padding: '8px 12px', border: '1px solid #333', borderRadius: 6 }}>

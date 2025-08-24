@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
-import { PROJECTS_DATA, ProjectData } from '../../data/projectsData'
+import { useEffect, useState } from 'react'
+import { PROJECTS_DATA } from '../../data/projectsData'
 import { ProjectHeader } from '../../components/portfolio/ProjectHeader'
-import { ProjectGrid } from '../../components/portfolio/ProjectGrid'
+import { GridGallery } from '../../components/portfolio/GridGallery'
 import ThreeDFoldGalleryLight from '../../components/portfolio/ThreeDFoldGalleryLight'
 import { SpotlightProvider } from '../../components/portfolio/SpotlightContext'
-import './../../components/portfolio/styles/portfolio-layout.css'
-import './../../components/portfolio/styles/gallery-3d.css'
-import './../../components/portfolio/styles/tiles.css'
+import '../../components/portfolio/styles/portfolio-layout.css'
+import '../../components/portfolio/styles/gallery-3d.css'
+import '../../components/portfolio/styles/tiles.css'
 
 
 export default function PortfolioInfiniteScroll() {
@@ -14,24 +14,17 @@ export default function PortfolioInfiniteScroll() {
   const [activeProjectIndex, setActiveProjectIndex] = useState(0)
   const [viewMode, setViewMode] = useState<'fold' | 'grid'>('fold')
 
-  // Add this useEffect to your PortfolioInfiniteScroll component
+  // Body class toggle for footer hide/show
   useEffect(() => {
-    // Hide the main app footer when this page loads
     document.body.classList.add('portfolio-infinite-active');
-    
-    // Get the main app footer and hide it
-    const footer = document.querySelector('footer');
-    if (footer) {
-      (footer as HTMLElement).style.display = 'none';
+    return () => document.body.classList.remove('portfolio-infinite-active');
+  }, []);
+
+  // Reduced-motion fallback
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setViewMode('grid');
     }
-    
-    return () => {
-      // Show footer again when leaving this page
-      document.body.classList.remove('portfolio-infinite-active');
-      if (footer) {
-        (footer as HTMLElement).style.display = '';
-      }
-    };
   }, []);
 
   const switchProject = (index: number) => {
@@ -41,31 +34,11 @@ export default function PortfolioInfiniteScroll() {
 
   return (
     <SpotlightProvider>
-      <div className="portfolio-wrapper" style={{ 
-        minHeight: '100vh', 
-        background: '#000',
-        paddingTop: '80px' 
-      }}>
-
-        {/* Main grouped container */}
-        <div className="portfolio-container" style={{
-          display: 'flex',
-          gap: '2rem',
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '0 2rem'
-        }}>
+      <div className="portfolio-wrapper">
+        <div className="portfolio-container">
           
           {/* Left Sidebar */}
-          <aside style={{
-            width: '250px',
-            background: '#111',
-            padding: '2rem',
-            borderRadius: '8px',
-            height: 'fit-content',
-            position: 'sticky',
-            top: '100px'
-          }}>
+          <aside className="project-sidebar">
             <h3 style={{ marginBottom: '1.5rem', color: '#fff' }}>Projects</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {PROJECTS_DATA.map((project, index) => (
@@ -90,7 +63,7 @@ export default function PortfolioInfiniteScroll() {
           </aside>
 
           {/* Main Content */}
-          <main style={{ flex: 1 }}>
+          <main className="main-content">
             {/* Project Header with Title and Toggle */}
             <ProjectHeader
               title={currentProject.title}
@@ -103,26 +76,7 @@ export default function PortfolioInfiniteScroll() {
               {viewMode === 'fold' ? (
                 <ThreeDFoldGalleryLight key={currentProject.id} project={currentProject} />
               ) : (
-                /* Grid View */
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                  gap: '1rem'
-                }}>
-                  {currentProject.tiles?.map((tile: any, index: number) => (
-                    <div key={index} style={{
-                      aspectRatio: '1',
-                      background: '#222',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#666'
-                    }}>
-                      Tile {index + 1}
-                    </div>
-                  ))}
-                </div>
+                <GridGallery project={currentProject} />
               )}
             </div>
 

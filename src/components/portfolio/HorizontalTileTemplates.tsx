@@ -27,9 +27,9 @@ export const TileTemplates = {
   
   video: ({ data }: { data: any }) => (
     <div className="tile-video">
-      <img src={data.poster} alt={data.title} className="video-poster" />
+      <img src={data.poster || data.src} alt={data.title || 'Video'} className="video-poster" />
       <div className="video-overlay">
-        <div className="video-title">{data.title}</div>
+        <div className="video-title">{data.title || 'Video'}</div>
         <div className="video-indicator">▶</div>
       </div>
     </div>
@@ -37,7 +37,7 @@ export const TileTemplates = {
   
   image: ({ data }: { data: any }) => (
     <div className="tile-image">
-      <img src={data.url} alt={data.caption || ''} className="image-content" />
+      <img src={data.url || data.src} alt={data.caption || data.alt || ''} className="image-content" />
       {data.caption && <div className="image-caption">{data.caption}</div>}
     </div>
   ),
@@ -52,6 +52,15 @@ export const TileTemplates = {
             <div className="stat-label">{stat.label}</div>
           </div>
         ))}
+      </div>
+    </div>
+  ),
+  
+  text: ({ data }: { data: any }) => (
+    <div className="tile-text">
+      <div className="text-content">
+        <h2>{data.title}</h2>
+        <p className="text-description">{data.description}</p>
       </div>
     </div>
   )

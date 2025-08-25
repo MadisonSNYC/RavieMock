@@ -14,6 +14,7 @@ const PAGE_SIZE = 9;
 
 export default function WorkGrid3x3() {
   const projects: any[] = useMemo(() => (Array.isArray(projectsJson) ? projectsJson : []), []);
+  console.debug('[3x3] projects.len =', projects.length);
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   
@@ -23,8 +24,15 @@ export default function WorkGrid3x3() {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
+    console.debug('[3x3] IO init');
     const obs = new IntersectionObserver(
-      (entries) => entries[0]?.isIntersecting && setPage((p) => p + 1),
+      (entries) => {
+        const hit = !!entries?.[0]?.isIntersecting;
+        if (hit) {
+          console.debug('[3x3] IO hit → page++');
+          setPage((p) => p + 1);
+        }
+      },
       { root: null, rootMargin: '1500px 0px 1500px 0px', threshold: 0 }
     );
     obs.observe(el);
@@ -33,6 +41,7 @@ export default function WorkGrid3x3() {
 
   // Near-bottom fallback guard
   useEffect(() => {
+    console.debug('[3x3] scroll fallback init');
     const onScroll = () => {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 600;
       if (nearBottom) setPage((p) => p + 1);
@@ -53,6 +62,8 @@ export default function WorkGrid3x3() {
       document.body.style.overflow = prevBody;
     };
   }, []);
+
+  console.debug('[3x3] page =', page, 'visible =', visible.length);
 
   return (
     <ReducedMotionProvider>
@@ -109,8 +120,15 @@ export default function WorkGrid3x3() {
         </div>
         
         {/* sentinel + spacer to guarantee intersection */}
-        <div ref={sentinelRef} aria-hidden="true" style={{ height: 1 }} />
+        <div
+          ref={sentinelRef}
+          aria-hidden="true"
+          style={{ height: 8, marginTop: 24, background: '#222' }}
+        />
         <div aria-hidden="true" style={{ height: 800 }} />   {/* spacer ensures page is scrollable */}
+        
+        {/* Guarantee page can scroll even if first page fills the viewport */}
+        <div aria-hidden="true" style={{ height: Math.max(0, 600 - (window.innerHeight - document.body.offsetHeight)) }} />
       </section>
     </ReducedMotionProvider>
   );

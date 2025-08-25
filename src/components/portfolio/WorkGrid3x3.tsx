@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 // PICK THE LIVE DATA SOURCE. If this path differs in your repo, STOP and ask.
 import projectsJson from '../../data/projects.json';
 import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
@@ -10,10 +10,49 @@ function resolvePoster(p:any): string | undefined {
 }
 
 const NINE = 9;
+const PAGE_SIZE = 9;
 
 export default function WorkGrid3x3() {
   const projects: any[] = useMemo(() => (Array.isArray(projectsJson) ? projectsJson : []), []);
-  const firstNine = useMemo(() => projects.slice(0, NINE), [projects]);
+  const [page, setPage] = useState(1);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  
+  const visible = useMemo(() => projects.slice(0, page * PAGE_SIZE), [projects, page]);
+
+  // IntersectionObserver for auto-append
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => entries[0]?.isIntersecting && setPage((p) => p + 1),
+      { root: null, rootMargin: '1200px 0px 1200px 0px', threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Near-bottom fallback guard
+  useEffect(() => {
+    const onScroll = () => {
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 600;
+      if (nearBottom) setPage((p) => p + 1);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Guard against stray body/html overflow locks
+  useEffect(() => {
+    const html = document.documentElement;
+    const prevHtml = html.style.overflow;
+    const prevBody = document.body.style.overflow;
+    html.style.overflow = '';
+    document.body.style.overflow = '';
+    return () => {
+      html.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+    };
+  }, []);
 
   return (
     <ReducedMotionProvider>
@@ -22,7 +61,7 @@ export default function WorkGrid3x3() {
 
         {/* 3x3 desktop, 2x? tablet, 1x mobile */}
         <div className="grid gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {firstNine.map((p: any, i: number) => {
+          {visible.map((p: any, i: number) => {
             const poster = resolvePoster(p);
             const title = p.title || p.client || 'Project';
             const to = p.slug ? `/the-work/${p.slug}` : undefined;
@@ -58,6 +97,9 @@ export default function WorkGrid3x3() {
             );
           })}
         </div>
+        
+        {/* Sentinel to trigger more loads */}
+        <div ref={sentinelRef} aria-hidden="true" style={{ height: 8, marginTop: 24 }} />
       </section>
     </ReducedMotionProvider>
   );

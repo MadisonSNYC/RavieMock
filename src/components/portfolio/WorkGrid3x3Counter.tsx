@@ -17,6 +17,18 @@ export default function WorkGrid3x3Counter() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   
+  // Get scroll progress - no target means it tracks window scroll
+  const { scrollYProgress } = useScroll({
+    offset: ["start start", "end end"]
+  });
+  
+  // Create transforms for each column (3 columns)
+  // Column 1: moves up, Column 2: moves down, Column 3: moves up
+  // Increased movement range for more dramatic effect
+  const column1Y = useTransform(scrollYProgress, [0, 1], [0, -400]);
+  const column2Y = useTransform(scrollYProgress, [0, 1], [0, 400]);
+  const column3Y = useTransform(scrollYProgress, [0, 1], [0, -400]);
+  
   // Debug log
   useEffect(() => {
     console.log('[WorkGrid3x3Counter] Mounted with', projects.length, 'projects');
@@ -29,18 +41,6 @@ export default function WorkGrid3x3Counter() {
     });
     return () => unsubscribe();
   }, [scrollYProgress]);
-  
-  // Get scroll progress - no target means it tracks window scroll
-  const { scrollYProgress } = useScroll({
-    offset: ["start start", "end end"]
-  });
-  
-  // Create transforms for each column (3 columns)
-  // Column 1: moves up, Column 2: moves down, Column 3: moves up
-  // Increased movement range for more dramatic effect
-  const column1Y = useTransform(scrollYProgress, [0, 1], [0, -400]);
-  const column2Y = useTransform(scrollYProgress, [0, 1], [0, 400]);
-  const column3Y = useTransform(scrollYProgress, [0, 1], [0, -400]);
   
   const visible = useMemo(() => projects.slice(0, page * PAGE_SIZE), [projects, page]);
   

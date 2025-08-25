@@ -5,6 +5,7 @@ import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdap
 import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
 import WorkHomeGridAdapter from '../../components/portfolio/WorkHomeGridAdapter';
 import WorkGrid3x3 from '../../components/portfolio/WorkGrid3x3';
+import WorkGridViewport from '../../components/portfolio/WorkGridViewport';
 import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
 import { SpotlightProvider } from '../../components/portfolio/SpotlightContext';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
@@ -14,6 +15,7 @@ import '../../components/portfolio/styles/work-3x3-overrides.css';
 const PAGE_SIZE = 6; // was 12
 
 const WorkIndex: React.FC = () => {
+  const USE_GRID_VIEWPORT = import.meta.env.VITE_WORK_GRID_VIEWPORT === 'true';
   const USE_WORK_3X3 = import.meta.env.VITE_WORK_3X3 === 'true';
   const USE_HOME_GRID = import.meta.env.VITE_WORK_USE_HOME_GRID === 'true';
   const USE_HORIZONTAL = import.meta.env.VITE_WORK_HORIZ_3D === 'true';
@@ -102,6 +104,15 @@ const WorkIndex: React.FC = () => {
   }, []);
 
   const loadMore = () => setPage(p => p + 1);
+
+  // GridViewport - Portfolio-style infinite scroll with 3 columns
+  if (USE_GRID_VIEWPORT) {
+    return (
+      <main className="min-h-screen">
+        <WorkGridViewport />
+      </main>
+    );
+  }
 
   if (USE_WORK_3X3) {
     return (

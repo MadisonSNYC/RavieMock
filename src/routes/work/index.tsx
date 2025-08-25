@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
 import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdapter';
 import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
+import WorkHomeGridAdapter from '../../components/portfolio/WorkHomeGridAdapter';
 import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
 import { SpotlightProvider } from '../../components/portfolio/SpotlightContext';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
@@ -11,6 +12,7 @@ import '../../components/portfolio/styles/work-grid-overrides.css';
 const PAGE_SIZE = 6; // was 12
 
 const WorkIndex: React.FC = () => {
+  const USE_HOME_GRID = import.meta.env.VITE_WORK_USE_HOME_GRID === 'true';
   const USE_HORIZONTAL = import.meta.env.VITE_WORK_HORIZ_3D === 'true';
   const USE_LEGACY_GRID = import.meta.env.VITE_WORK_LEGACY_GRID === 'true';
   
@@ -98,7 +100,26 @@ const WorkIndex: React.FC = () => {
 
   const loadMore = () => setPage(p => p + 1);
 
-  if (USE_LEGACY_GRID) {
+  if (USE_HOME_GRID) {
+    // Ensure window scroll is enabled for home grid mode
+    React.useEffect(() => {
+      const html = document.documentElement;
+      const prevHtml = html.style.overflow;
+      const prevBody = document.body.style.overflow;
+      html.style.overflow = '';
+      document.body.style.overflow = '';
+      return () => {
+        html.style.overflow = prevHtml;
+        document.body.style.overflow = prevBody;
+      };
+    }, []);
+
+    return (
+      <main className="min-h-screen">
+        <WorkHomeGridAdapter />
+      </main>
+    );
+  } else if (USE_LEGACY_GRID) {
     return (
       <main className="min-h-screen work-legacy">
         <ReducedMotionProvider>
@@ -108,9 +129,7 @@ const WorkIndex: React.FC = () => {
         </ReducedMotionProvider>
       </main>
     );
-  }
-
-  if (USE_HORIZONTAL) {
+  } else if (USE_HORIZONTAL) {
     return (
       <main className="min-h-screen">
         {/* Full-viewport section so the gallery has a canvas */}

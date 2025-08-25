@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
 import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdapter';
+import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
 
 const PAGE_SIZE = 6; // was 12
 
 const WorkIndex: React.FC = () => {
   const USE_HORIZONTAL = import.meta.env.VITE_WORK_HORIZ_3D === 'true';
+  const USE_LEGACY_GRID = import.meta.env.VITE_WORK_LEGACY_GRID === 'true';
   
   const projects = projectsData;
   const [page, setPage] = useState(1);
@@ -92,6 +94,14 @@ const WorkIndex: React.FC = () => {
   }, []);
 
   const loadMore = () => setPage(p => p + 1);
+
+  if (USE_LEGACY_GRID) {
+    return (
+      <main className="min-h-screen">
+        <WorkGridLegacy />
+      </main>
+    );
+  }
 
   if (USE_HORIZONTAL) {
     return (

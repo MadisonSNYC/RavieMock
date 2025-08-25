@@ -1,61 +1,143 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
 
+const PAGE_SIZE = 6; // was 12
+
 const WorkIndex: React.FC = () => {
+  const projects = projectsData;
+  const [page, setPage] = useState(1);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const [debug, setDebug] = useState({ page, visible: 0, total: Array.isArray(projects) ? projects.length : 0, intersections: 0 });
+
+  const visibleProjects = useMemo(() => {
+    const list = Array.isArray(projects) ? projects : [];
+    return list.slice(0, page * PAGE_SIZE);
+  }, [page, projects]);
+
+  useEffect(() => {
+    setDebug((d) => ({ ...d, page, visible: visibleProjects.length, total: Array.isArray(projects) ? projects.length : 0 }));
+  }, [page, visibleProjects]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      entries => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setIsIntersecting(true);
+          setDebug((d) => ({ ...d, intersections: d.intersections + 1 }));
+        } else {
+          setIsIntersecting(false);
+        }
+      },
+      { root: null, rootMargin: '1500px 0px 1500px 0px', threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isIntersecting) return;
+    setPage(p => p + 1);
+  }, [isIntersecting]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const nearBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 600;
+      if (nearBottom) setPage((p) => p + 1);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const loadMore = () => setPage(p => p + 1);
+
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Work</h1>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projectsData.map((project) => {
-            const imageSrc = project.posterSrc || project.image || '/placeholder.jpg';
-            const projectTitle = project.title || 'Untitled';
-            const projectClient = project.client || '';
-            
-            return project.slug ? (
-              <Link
-                key={project.id}
-                to={`/the-work/${project.slug}`}
-                className="group relative aspect-video bg-gray-900 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-white"
-              >
-                <img
-                  src={imageSrc}
-                  alt={`${projectClient} - ${projectTitle}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4">
-                    <p className="text-sm text-gray-300">{projectClient}</p>
-                    <h3 className="text-lg font-semibold">{projectTitle}</h3>
-                  </div>
-                </div>
-              </Link>
-            ) : (
-              <div
-                key={project.id}
-                className="group relative aspect-video bg-gray-900 rounded-lg overflow-hidden cursor-default"
-              >
-                <img
-                  src={imageSrc}
-                  alt={`${projectClient} - ${projectTitle}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4">
-                    <p className="text-sm text-gray-300">{projectClient}</p>
-                    <h3 className="text-lg font-semibold">{projectTitle}</h3>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    <main className="min-h-screen px-4 sm:px-6 lg:px-10 py-8">
+      <h1 className="text-2xl sm:text-3xl font-medium mb-6">Work</h1>
+
+      <div style={{fontSize:12,opacity:.7,marginBottom:8}}>
+        page={page} • visible={debug.visible}/{debug.total} • intersections={debug.intersections}
       </div>
-    </div>
+
+      {/* CLS-safe grid container */}
+      <div
+        className="grid gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        aria-live="polite"
+        aria-busy={isIntersecting ? 'true' : 'false'}
+      >
+        {visibleProjects.map((p: any, i: number) => {
+          const poster =
+            p.posterSrc || p.image || p.thumbnail || (p.media && p.media[0]?.src);
+          const title = p.title || p.client || 'Project';
+          const to = p.slug ? `/the-work/${p.slug}` : undefined;
+
+          return (
+            <div key={p.id ?? p.slug ?? i} className="group">
+              {to ? (
+                <a href={to} className="block focus:outline-none focus:ring">
+                  <div className="relative w-full rounded-xl overflow-hidden">
+                    {/* Reserve aspect ratio to prevent CLS */}
+                    <div style={{ aspectRatio: '16 / 9', background: '#0d0d0d' }}>
+                      {poster && (
+                        <img
+                          src={poster}
+                          alt={title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      )}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="text-sm opacity-80">{title}</div>
+                      {p.durationSec ? (
+                        <span className="text-xs opacity-60">{p.durationSec}s</span>
+                      ) : null}
+                    </div>
+                  </div>
+                </a>
+              ) : (
+                <div className="relative w-full rounded-xl overflow-hidden">
+                  <div style={{ aspectRatio: '16 / 9', background: '#0d0d0d' }}>
+                    {poster && (
+                      <img
+                        src={poster}
+                        alt={title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </div>
+                  <div className="mt-3 text-sm opacity-80">{title}</div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Sentinel & fallback */}
+      <div
+        ref={sentinelRef}
+        aria-hidden="true"
+        style={{ height: 8, marginTop: 24, background: isIntersecting ? '#16a34a' : '#333', borderRadius: 4 }}
+      />
+      <div className="mt-4 flex justify-center">
+        <button
+          type="button"
+          onClick={loadMore}
+          className="px-4 py-2 rounded-md border border-white/10 hover:bg-white/5 text-sm"
+        >
+          Load more
+        </button>
+      </div>
+    </main>
   );
 };
 

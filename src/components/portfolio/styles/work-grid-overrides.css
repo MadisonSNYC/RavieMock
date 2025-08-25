@@ -1,0 +1,33 @@
+/* Route-scoped overrides for /work legacy grid only */
+
+/* 1) Lock a strict 16:9 box for each card's media */
+.work-legacy .portfolio-card .spotlight-content,
+.work-legacy .portfolio-card .spotlight-content > * {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+}
+
+/* 2) Prevent any hover zoom/scale/translate (common in legacy card CSS) */
+.work-legacy .portfolio-card:hover,
+.work-legacy .portfolio-card:hover .spotlight-content,
+.work-legacy .portfolio-card:hover img,
+.work-legacy .portfolio-card:hover video {
+  transform: none !important;
+  scale: 1 !important;
+}
+
+/* 3) Make sure the image paints properly inside the box */
+.work-legacy .portfolio-card img,
+.work-legacy .portfolio-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 4) Smooth grid flow: no unexpected min-heights from wrappers */
+.work-legacy .portfolio-card {
+  contain: content;
+  overflow: hidden; /* only the card, not the page */
+}

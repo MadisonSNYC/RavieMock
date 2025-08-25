@@ -26,6 +26,19 @@ export default function WorkGridLegacy() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [ioReady, setIoReady] = useState(false);
 
+  // Ensure body/html overflow locks from other routes are not active here
+  useEffect(() => {
+    const html = document.documentElement;
+    const prevHtml = html.style.overflow;
+    const prevBody = document.body.style.overflow;
+    html.style.overflow = '';
+    document.body.style.overflow = '';
+    return () => {
+      html.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+    };
+  }, []);
+
   const visible = useMemo(() => {
     const list = projects.slice(0, page * PAGE_SIZE).map(normalizeProject);
     return list;

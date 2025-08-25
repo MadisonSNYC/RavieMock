@@ -6,6 +6,7 @@ import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
 import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
 import { SpotlightProvider } from '../../components/portfolio/SpotlightContext';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
+import '../../components/portfolio/styles/work-grid-overrides.css';
 
 const PAGE_SIZE = 6; // was 12
 
@@ -99,7 +100,7 @@ const WorkIndex: React.FC = () => {
 
   if (USE_LEGACY_GRID) {
     return (
-      <main className="min-h-screen">
+      <main className="min-h-screen work-legacy">
         <ReducedMotionProvider>
           <SpotlightProvider>
             <WorkGridLegacy />

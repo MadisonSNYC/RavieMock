@@ -30,6 +30,7 @@ const TestPortfolio = lazy(() => import('./routes/dev/test-portfolio'))
 const Backup3DLight = lazy(() => import('./routes/dev/backup-3d-light'))
 const AuthPlayground = lazy(() => import('./routes/dev/AuthPlayground'))
 const PortfolioHorizontal = lazy(() => import('./routes/dev/PortfolioHorizontal'))
+const WorkIndex = lazy(() => import('./routes/work'))
 
 // Loading component
 const PageLoader = () => (
@@ -64,7 +65,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/:slug" element={<PortfolioPage />} />
               <Route path="/home" element={<HomePage />} />
-              <Route path="/work" element={<WorkPage />} />
+              <Route path="/work" element={<WorkIndex />} />
               <Route path="/work/:id" element={<ProjectPage />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/portfolio/:slug" element={<PortfolioPage />} />

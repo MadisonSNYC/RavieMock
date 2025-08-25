@@ -17,17 +17,30 @@ export default function WorkGrid3x3Counter() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   
-  // Get scroll progress
+  // Debug log
+  useEffect(() => {
+    console.log('[WorkGrid3x3Counter] Mounted with', projects.length, 'projects');
+  }, [projects.length]);
+  
+  // Monitor scroll progress
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      console.log('[WorkGrid3x3Counter] Scroll progress:', latest);
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+  
+  // Get scroll progress - no target means it tracks window scroll
   const { scrollYProgress } = useScroll({
-    target: containerRef,
     offset: ["start start", "end end"]
   });
   
   // Create transforms for each column (3 columns)
   // Column 1: moves up, Column 2: moves down, Column 3: moves up
-  const column1Y = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const column2Y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const column3Y = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  // Increased movement range for more dramatic effect
+  const column1Y = useTransform(scrollYProgress, [0, 1], [0, -400]);
+  const column2Y = useTransform(scrollYProgress, [0, 1], [0, 400]);
+  const column3Y = useTransform(scrollYProgress, [0, 1], [0, -400]);
   
   const visible = useMemo(() => projects.slice(0, page * PAGE_SIZE), [projects, page]);
   
@@ -145,8 +158,10 @@ export default function WorkGrid3x3Counter() {
         </div>
         
         {/* Sentinel for infinite scroll */}
-        <div ref={sentinelRef} aria-hidden="true" style={{ height: 8, marginTop: 24 }} />
-        <div aria-hidden="true" style={{ height: 800 }} />
+        <div ref={sentinelRef} aria-hidden="true" style={{ height: 8, marginTop: 24, background: '#333' }} />
+        
+        {/* Large spacer to ensure scroll range for counter-scroll effect */}
+        <div aria-hidden="true" style={{ height: 2000 }} />
       </section>
     </ReducedMotionProvider>
   );

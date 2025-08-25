@@ -18,7 +18,21 @@ export default function WorkGrid3x3() {
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   
-  const visible = useMemo(() => projects.slice(0, page * PAGE_SIZE), [projects, page]);
+  const visible = useMemo(() => {
+    const totalNeeded = page * PAGE_SIZE;
+    if (projects.length === 0) return [];
+    
+    // Create infinite loop by repeating projects
+    const result = [];
+    for (let i = 0; i < totalNeeded; i++) {
+      result.push({
+        ...projects[i % projects.length],
+        // Add unique key for React to avoid duplicates
+        _loopId: i
+      });
+    }
+    return result;
+  }, [projects, page]);
 
   // IntersectionObserver for auto-append
   useEffect(() => {
@@ -43,8 +57,20 @@ export default function WorkGrid3x3() {
   useEffect(() => {
     console.debug('[3x3] scroll fallback init');
     const onScroll = () => {
-      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 600;
-      if (nearBottom) setPage((p) => p + 1);
+      const scrollY = window.scrollY;
+      const innerHeight = window.innerHeight;
+      const offsetHeight = document.body.offsetHeight;
+      const nearBottom = innerHeight + scrollY >= offsetHeight - 600;
+      
+      // Log every 500px of scroll
+      if (scrollY % 500 < 10) {
+        console.debug('[3x3] Scroll position:', scrollY, 'nearBottom:', nearBottom);
+      }
+      
+      if (nearBottom) {
+        console.debug('[3x3] Near bottom triggered! Incrementing page');
+        setPage((p) => p + 1);
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -108,7 +134,7 @@ export default function WorkGrid3x3() {
               </div>;
 
             return (
-              <div key={p.id ?? p.slug ?? i}>
+              <div key={p._loopId ?? p.id ?? p.slug ?? i}>
                 {to ? (
                   <a href={to} className="block focus:outline-none focus:ring">
                     {card}
@@ -123,8 +149,21 @@ export default function WorkGrid3x3() {
         <div
           ref={sentinelRef}
           aria-hidden="true"
-          style={{ height: 8, marginTop: 24, background: '#222' }}
-        />
+          style={{ 
+            height: 20, 
+            marginTop: 24, 
+            background: 'linear-gradient(90deg, #ff0000, #00ff00)', 
+            opacity: 0.7,
+            borderRadius: 4,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: 12
+          }}
+        >
+          LOAD MORE (Page {page})
+        </div>
         <div aria-hidden="true" style={{ height: 800 }} />   {/* spacer ensures page is scrollable */}
         
         {/* Guarantee page can scroll even if first page fills the viewport */}

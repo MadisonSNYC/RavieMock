@@ -17,14 +17,22 @@ export default function WorkGrid3x3() {
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   
-  const visible = useMemo(() => projects.slice(0, page * PAGE_SIZE), [projects, page]);
+  const visible = useMemo(() => {
+    const result = projects.slice(0, page * PAGE_SIZE);
+    console.log(`[WorkGrid3x3] Page: ${page}, Showing: ${result.length} of ${projects.length} projects`);
+    return result;
+  }, [projects, page]);
 
   // IntersectionObserver for auto-append
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      (entries) => entries[0]?.isIntersecting && setPage((p) => p + 1),
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setPage((p) => p + 1);
+        }
+      },
       { root: null, rootMargin: '1200px 0px 1200px 0px', threshold: 0 }
     );
     obs.observe(el);

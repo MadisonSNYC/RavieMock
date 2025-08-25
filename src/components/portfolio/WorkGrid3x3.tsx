@@ -24,12 +24,8 @@ export default function WorkGrid3x3() {
     const el = sentinelRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setPage((p) => p + 1);
-        }
-      },
-      { root: null, rootMargin: '1200px 0px 1200px 0px', threshold: 0 }
+      (entries) => entries[0]?.isIntersecting && setPage((p) => p + 1),
+      { root: null, rootMargin: '1500px 0px 1500px 0px', threshold: 0 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -45,34 +41,22 @@ export default function WorkGrid3x3() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Guard against stray body/html overflow locks - MORE AGGRESSIVE
+  // Unlock body/html overflow on mount
   useEffect(() => {
     const html = document.documentElement;
-    const body = document.body;
-    
-    // Force remove problematic classes
-    body.classList.remove('portfolio-infinite-active');
-    body.classList.remove('no-scrollbars');
-    html.classList.remove('no-scrollbars');
-    
-    // Clear inline styles
     const prevHtml = html.style.overflow;
-    const prevBody = body.style.overflow;
-    html.style.overflow = '';
-    body.style.overflow = '';
-    html.style.height = '';
-    body.style.height = '';
-    
+    const prevBody = document.body.style.overflow;
+    html.style.overflow = '';            // allow page scroll
+    document.body.style.overflow = '';   // allow page scroll
     return () => {
-      // On unmount, restore previous values
       html.style.overflow = prevHtml;
-      body.style.overflow = prevBody;
+      document.body.style.overflow = prevBody;
     };
   }, []);
 
   return (
     <ReducedMotionProvider>
-      <section className="work-3x3 px-4 sm:px-6 lg:px-10 py-8">
+      <section className="work-3x3 px-4 sm:px-6 lg:px-10 py-8" style={{ overflow: 'visible' }}>
         <h1 className="text-2xl sm:text-3xl font-medium mb-6">Work</h1>
 
         {/* 3x3 desktop, 2x? tablet, 1x mobile */}
@@ -124,8 +108,9 @@ export default function WorkGrid3x3() {
           })}
         </div>
         
-        {/* Sentinel to trigger more loads */}
-        <div ref={sentinelRef} aria-hidden="true" style={{ height: 8, marginTop: 24 }} />
+        {/* sentinel + spacer to guarantee intersection */}
+        <div ref={sentinelRef} aria-hidden="true" style={{ height: 1 }} />
+        <div aria-hidden="true" style={{ height: 800 }} />   {/* spacer ensures page is scrollable */}
       </section>
     </ReducedMotionProvider>
   );

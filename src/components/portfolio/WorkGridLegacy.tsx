@@ -4,6 +4,22 @@ import ProjectGrid from './ProjectGrid';
 
 const PAGE_SIZE = 9; // 3x3
 
+function resolvePoster(p:any): string | undefined {
+  // prefer existing poster fields
+  const cand = p.posterSrc || p.image || p.thumbnail || (p.media && p.media[0]?.src);
+  if (typeof cand === 'string' && cand.trim()) return cand;
+
+  // graceful final fallback (brand mark) so card is never empty
+  return '/Assts/Ravie Logos/Vector.png';
+}
+
+function normalizeProject(p:any) {
+  // Ensure ProjectCard gets a poster field it expects
+  const poster = resolvePoster(p);
+  // keep rest of the object intact; override/add the poster key ProjectCard relies on
+  return { ...p, posterSrc: poster, image: p.image ?? poster };
+}
+
 export default function WorkGridLegacy() {
   const projects: any[] = Array.isArray(projectsJson) ? projectsJson : [];
   const [page, setPage] = useState(1);
@@ -11,7 +27,7 @@ export default function WorkGridLegacy() {
   const [ioReady, setIoReady] = useState(false);
 
   const visible = useMemo(() => {
-    const list = projects.slice(0, page * PAGE_SIZE);
+    const list = projects.slice(0, page * PAGE_SIZE).map(normalizeProject);
     return list;
   }, [projects, page]);
 

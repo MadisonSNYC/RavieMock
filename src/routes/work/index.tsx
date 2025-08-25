@@ -16,6 +16,25 @@ const WorkIndex: React.FC = () => {
     return list.slice(0, page * PAGE_SIZE);
   }, [page, projects]);
 
+  // Safety guard: ensure global scroll is enabled on /work
+  useEffect(() => {
+    // remove body class used by portfolio route
+    document.body.classList.remove('portfolio-infinite-active');
+
+    // clear any inline overflow locks that might have been left behind
+    const html = document.documentElement;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    html.style.overflow = '';
+    document.body.style.overflow = '';
+
+    return () => {
+      // do NOT re-apply locks on unmount; /work should never set them
+      html.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
+
   useEffect(() => {
     setDebug((d) => ({ ...d, page, visible: visibleProjects.length, total: Array.isArray(projects) ? projects.length : 0 }));
   }, [page, visibleProjects]);

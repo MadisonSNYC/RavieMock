@@ -3,11 +3,9 @@ import React from 'react';
 export const TileTemplates = {
   hero: ({ data }: { data: any }) => (
     <div className="tile-hero">
-      <img src={data.image} alt={data.title} className="hero-bg" />
-      <div className="hero-overlay">
-        <h1 className="hero-title">{data.title}</h1>
-        <p className="hero-subtitle">{data.subtitle}</p>
-      </div>
+      <img className="hero-media" src={data.url || data.src || data.image} alt={data.alt || data.title || ''} />
+      {data.title && <div className="hero-title">{data.title}</div>}
+      {data.subtitle && <p className="hero-subtitle">{data.subtitle}</p>}
     </div>
   ),
   
@@ -27,7 +25,7 @@ export const TileTemplates = {
   
   video: ({ data }: { data: any }) => (
     <div className="tile-video">
-      <img src={data.poster || data.src} alt={data.title || 'Video'} className="video-poster" />
+      <img className="video-poster" src={data.poster || data.src} alt={data.title || 'Video'} />
       <div className="video-overlay">
         <div className="video-title">{data.title || 'Video'}</div>
         <div className="video-indicator">▶</div>
@@ -37,7 +35,7 @@ export const TileTemplates = {
   
   image: ({ data }: { data: any }) => (
     <div className="tile-image">
-      <img src={data.url || data.src} alt={data.caption || data.alt || ''} className="image-content" />
+      <img className="image-content" src={data.url || data.src} alt={data.caption || data.alt || ''} />
       {data.caption && <div className="image-caption">{data.caption}</div>}
     </div>
   ),
@@ -57,10 +55,10 @@ export const TileTemplates = {
   ),
   
   text: ({ data }: { data: any }) => (
-    <div className="tile-text">
+    <div className="tile-summary">
       <div className="text-content">
-        <h2>{data.title}</h2>
-        <p className="text-description">{data.description}</p>
+        {data.title && <h2>{data.title}</h2>}
+        {data.description && <p className="text-description">{data.description}</p>}
       </div>
     </div>
   )

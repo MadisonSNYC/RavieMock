@@ -1,6 +1,7 @@
 import './App.css'
 import { lazy, Suspense, useState } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import React from 'react'
 import Header from './components/HeaderFrosted'
 import Footer from './components/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -31,6 +32,15 @@ const Backup3DLight = lazy(() => import('./routes/dev/backup-3d-light'))
 const AuthPlayground = lazy(() => import('./routes/dev/AuthPlayground'))
 const PortfolioHorizontal = lazy(() => import('./routes/dev/PortfolioHorizontal'))
 const WorkIndex = lazy(() => import('./routes/work'))
+
+// Redirect component for legacy portfolio route
+const PortfolioRedirect = () => {
+  const navigate = useNavigate()
+  React.useEffect(() => {
+    navigate('/work', { replace: true })
+  }, [navigate])
+  return null
+}
 
 // Loading component
 const PageLoader = () => (
@@ -67,7 +77,7 @@ function App() {
               <Route path="/home" element={<HomePage />} />
               <Route path="/work" element={<WorkIndex />} />
               <Route path="/work/:id" element={<ProjectPage />} />
-              <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/portfolio" element={<PortfolioRedirect />} />
               <Route path="/portfolio/:slug" element={<PortfolioPage />} />
               <Route path="/about" element={<AboutPageNew />} />
               <Route path="/about-old" element={<AboutPage />} />

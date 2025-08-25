@@ -4,14 +4,17 @@ import projectsData from '../../data/projects.json';
 import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdapter';
 import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
 import WorkHomeGridAdapter from '../../components/portfolio/WorkHomeGridAdapter';
+import WorkGrid3x3 from '../../components/portfolio/WorkGrid3x3';
 import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
 import { SpotlightProvider } from '../../components/portfolio/SpotlightContext';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
 import '../../components/portfolio/styles/work-grid-overrides.css';
+import '../../components/portfolio/styles/work-3x3-overrides.css';
 
 const PAGE_SIZE = 6; // was 12
 
 const WorkIndex: React.FC = () => {
+  const USE_WORK_3X3 = import.meta.env.VITE_WORK_3X3 === 'true';
   const USE_HOME_GRID = import.meta.env.VITE_WORK_USE_HOME_GRID === 'true';
   const USE_HORIZONTAL = import.meta.env.VITE_WORK_HORIZ_3D === 'true';
   const USE_LEGACY_GRID = import.meta.env.VITE_WORK_LEGACY_GRID === 'true';
@@ -99,6 +102,14 @@ const WorkIndex: React.FC = () => {
   }, []);
 
   const loadMore = () => setPage(p => p + 1);
+
+  if (USE_WORK_3X3) {
+    return (
+      <main className="min-h-screen">
+        <WorkGrid3x3 />
+      </main>
+    );
+  }
 
   if (USE_HOME_GRID) {
     // Ensure window scroll is enabled for home grid mode

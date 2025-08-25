@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
+import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdapter';
+import '../../components/portfolio/styles/horizontal-gallery-3d.css';
 
 const PAGE_SIZE = 6; // was 12
 
 const WorkIndex: React.FC = () => {
+  const USE_HORIZONTAL = import.meta.env.VITE_WORK_HORIZ_3D === 'true';
+  
   const projects = projectsData;
   const [page, setPage] = useState(1);
   const [isIntersecting, setIsIntersecting] = useState(false);
@@ -34,6 +38,20 @@ const WorkIndex: React.FC = () => {
       document.body.style.overflow = prevBodyOverflow;
     };
   }, []);
+
+  // Hide page scrollbar and let the gallery own wheel while this route is mounted
+  React.useEffect(() => {
+    if (!USE_HORIZONTAL) return;
+    const html = document.documentElement;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    html.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, [USE_HORIZONTAL]);
 
   useEffect(() => {
     setDebug((d) => ({ ...d, page, visible: visibleProjects.length, total: Array.isArray(projects) ? projects.length : 0 }));
@@ -74,6 +92,17 @@ const WorkIndex: React.FC = () => {
   }, []);
 
   const loadMore = () => setPage(p => p + 1);
+
+  if (USE_HORIZONTAL) {
+    return (
+      <main className="min-h-screen">
+        {/* Full-viewport section so the gallery has a canvas */}
+        <section style={{ height: '100vh' }}>
+          <WorkHorizontalAdapter />
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen px-4 sm:px-6 lg:px-10 py-8">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
 import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdapter';
 import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
+import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
 
 const PAGE_SIZE = 6; // was 12
@@ -98,7 +99,9 @@ const WorkIndex: React.FC = () => {
   if (USE_LEGACY_GRID) {
     return (
       <main className="min-h-screen">
-        <WorkGridLegacy />
+        <ReducedMotionProvider>
+          <WorkGridLegacy />
+        </ReducedMotionProvider>
       </main>
     );
   }

@@ -17,11 +17,7 @@ export default function WorkGrid3x3() {
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   
-  const visible = useMemo(() => {
-    const result = projects.slice(0, page * PAGE_SIZE);
-    console.log(`[WorkGrid3x3] Page: ${page}, Showing: ${result.length} of ${projects.length} projects`);
-    return result;
-  }, [projects, page]);
+  const visible = useMemo(() => projects.slice(0, page * PAGE_SIZE), [projects, page]);
 
   // IntersectionObserver for auto-append
   useEffect(() => {
@@ -49,16 +45,28 @@ export default function WorkGrid3x3() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Guard against stray body/html overflow locks
+  // Guard against stray body/html overflow locks - MORE AGGRESSIVE
   useEffect(() => {
     const html = document.documentElement;
+    const body = document.body;
+    
+    // Force remove problematic classes
+    body.classList.remove('portfolio-infinite-active');
+    body.classList.remove('no-scrollbars');
+    html.classList.remove('no-scrollbars');
+    
+    // Clear inline styles
     const prevHtml = html.style.overflow;
-    const prevBody = document.body.style.overflow;
+    const prevBody = body.style.overflow;
     html.style.overflow = '';
-    document.body.style.overflow = '';
+    body.style.overflow = '';
+    html.style.height = '';
+    body.style.height = '';
+    
     return () => {
+      // On unmount, restore previous values
       html.style.overflow = prevHtml;
-      document.body.style.overflow = prevBody;
+      body.style.overflow = prevBody;
     };
   }, []);
 
@@ -68,7 +76,10 @@ export default function WorkGrid3x3() {
         <h1 className="text-2xl sm:text-3xl font-medium mb-6">Work</h1>
 
         {/* 3x3 desktop, 2x? tablet, 1x mobile */}
-        <div className="grid gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12 lg:gap-16"
+          style={{ overflow: 'visible' }}
+        >
           {visible.map((p: any, i: number) => {
             const poster = resolvePoster(p);
             const title = p.title || p.client || 'Project';
@@ -77,7 +88,14 @@ export default function WorkGrid3x3() {
             const card =
               <div className="project-card rounded-xl overflow-hidden bg-black/40 border border-white/10">
                 {/* Strict 16:9 media box */}
-                <div className="media" style={{ aspectRatio: '16 / 9', width: '100%' }}>
+                <div
+                  className="media"
+                  style={{
+                    aspectRatio: '16 / 9',
+                    width: '105%',         // allow overflow
+                    marginLeft: '-2.5%',   // re-center
+                  }}
+                >
                   {poster ? (
                     <img
                       src={poster}

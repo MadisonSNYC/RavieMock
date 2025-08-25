@@ -29,3 +29,14 @@
   color: #94a3b8;
   font-size: 12px;
 }
+
+/* Add cinematic overflow feel */
+.work-3x3 .grid {
+  overflow: visible;
+  align-items: start;
+}
+
+/* Let tiles bleed a bit */
+.work-3x3 .project-card {
+  overflow: visible;
+}

@@ -5,14 +5,12 @@ import WorkHorizontalAdapter from '../../components/portfolio/WorkHorizontalAdap
 import WorkGridLegacy from '../../components/portfolio/WorkGridLegacy';
 import WorkHomeGridAdapter from '../../components/portfolio/WorkHomeGridAdapter';
 import WorkGrid3x3 from '../../components/portfolio/WorkGrid3x3';
-import WorkGrid3x3Counter from '../../components/portfolio/WorkGrid3x3Counter';
 import WorkGridViewport from '../../components/portfolio/WorkGridViewport';
 import { ReducedMotionProvider } from '../../providers/ReducedMotionProvider';
 import { SpotlightProvider } from '../../components/portfolio/SpotlightContext';
 import '../../components/portfolio/styles/horizontal-gallery-3d.css';
 import '../../components/portfolio/styles/work-grid-overrides.css';
 import '../../components/portfolio/styles/work-3x3-overrides.css';
-import '../../components/portfolio/styles/work-3x3-counter.css';
 
 const PAGE_SIZE = 6; // was 12
 
@@ -119,7 +117,7 @@ const WorkIndex: React.FC = () => {
   if (USE_WORK_3X3) {
     return (
       <main className="min-h-screen">
-        <WorkGrid3x3Counter />
+        <WorkGrid3x3 />
       </main>
     );
   }
